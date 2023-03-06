@@ -1,18 +1,20 @@
-mod expression;
-
 extern crate chrono;
 
 use std::fmt::{Debug, Display};
 use std::io::Write;
+
 use chrono::Local;
+
 use crate::expression::{Data, Expression};
 
+mod expression;
+
 struct Instruction {
-    name: String
+    name: String,
 }
 
 impl Instruction {
-    fn new(name:String) -> Instruction {
+    fn new(name: String) -> Instruction {
         Instruction {
             name
         }
@@ -21,7 +23,7 @@ impl Instruction {
 
 trait ExecutableInstruction {
     fn name(&self) -> &String;
-    fn init(parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> where Self:Sized;
+    fn init(parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> where Self: Sized;
     fn exec(&self);
     fn info(&self) -> String {
         return format!("[Instruction {}]", self.name());
@@ -32,16 +34,16 @@ trait ExecutableInstruction {
 
 struct PrintInstruction {
     instruction: Instruction,
-    data: Data
+    data: Data,
 }
 
 impl ExecutableInstruction for PrintInstruction {
     fn name(&self) -> &String {
-        return &self.instruction.name
+        return &self.instruction.name;
     }
 
     fn init(parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
-        Box::new(PrintInstruction{
+        Box::new(PrintInstruction {
             instruction: Instruction::new("print".to_string()),
             data: parameters.get(0).expect("Invalid parameter for Print").evaluate().clone(),
         })
@@ -54,8 +56,8 @@ impl ExecutableInstruction for PrintInstruction {
 
 fn print(data: &Data) {
     match data {
-        Data::String(s) => {println!("{}", s)}
-        Data::Number(n) => {println!("{}", n)}
+        Data::String(s) => { println!("{}", s) }
+        Data::Number(n) => { println!("{}", n) }
     }
 }
 
@@ -65,22 +67,20 @@ fn print(data: &Data) {
 
 struct DebugInstruction {
     instruction: Instruction,
-    data: Data
+    data: Data,
 }
 
-impl DebugInstruction {
-
-}
+impl DebugInstruction {}
 
 impl ExecutableInstruction for DebugInstruction {
     fn name(&self) -> &String {
-        return &self.instruction.name
+        return &self.instruction.name;
     }
 
     fn init(parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
-        Box::new(DebugInstruction{
+        Box::new(DebugInstruction {
             instruction: Instruction::new("debug".to_string()),
-            data: parameters.get(0).expect("Invalid parameter for Debug").evaluate().clone()
+            data: parameters.get(0).expect("Invalid parameter for Debug").evaluate().clone(),
         })
     }
 
@@ -91,8 +91,8 @@ impl ExecutableInstruction for DebugInstruction {
 
 fn debug(data: &Data) {
     match data {
-        Data::String(s) => {println!("{}", s)}
-        Data::Number(n) => {println!("{}", n)}
+        Data::String(s) => { println!("{}", s) }
+        Data::Number(n) => { println!("{}", n) }
     }
 }
 
@@ -101,7 +101,7 @@ fn debug(data: &Data) {
 // region "TIME"
 
 struct TimeInstruction {
-    instruction: Instruction
+    instruction: Instruction,
 }
 
 impl ExecutableInstruction for TimeInstruction {
@@ -123,7 +123,7 @@ impl ExecutableInstruction for TimeInstruction {
 
 // endregion
 
-fn get_input(prompt:&str) -> String {
+fn get_input(prompt: &str) -> String {
     println!("{}", prompt);
     print!("> ");
     std::io::stdout().flush().unwrap();
@@ -132,7 +132,7 @@ fn get_input(prompt:&str) -> String {
     return result.trim().to_string();
 }
 
-fn execute_instruction<'list, T>(name:&String, instruction_list: &'list Vec<Box<dyn ExecutableInstruction>>) -> Option<&'list Box<dyn ExecutableInstruction>> {
+fn execute_instruction<'list, T>(name: &String, instruction_list: &'list Vec<Box<dyn ExecutableInstruction>>) -> Option<&'list Box<dyn ExecutableInstruction>> {
     for instruction in instruction_list {
         if instruction.name() == name {
             return Some(instruction);
@@ -146,7 +146,7 @@ fn main() {
     let instruction_list = vec![
         PrintInstruction::init(&vec![Expression::new(Data::String("Hello Oribos Language!".parse().unwrap()))]),
         DebugInstruction::init(&vec![Expression::new(Data::String("Debug message".parse().unwrap()))]),
-        TimeInstruction::init(&vec![])
+        TimeInstruction::init(&vec![]),
     ];
 
     for instruction in instruction_list {
