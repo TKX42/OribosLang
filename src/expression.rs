@@ -4,18 +4,28 @@ pub enum Data {
     Number(f64),
 }
 
-pub struct Expression {
+pub trait Expression {
+    fn evaluate(&self) -> &Data;
+}
+
+pub struct DataExpression {
     data: Data,
 }
 
-impl Expression {
-    pub fn new(data: Data) -> Expression {
-        Expression {
+impl DataExpression {
+    pub(crate) fn new(data: Data) -> DataExpression {
+        DataExpression {
             data
         }
     }
 
-    pub fn evaluate(&self) -> &Data {
+    pub(crate) fn empty() -> DataExpression {
+        DataExpression::new(Data::Number(0.0))
+    }
+}
+
+impl Expression for DataExpression {
+    fn evaluate(&self) -> &Data {
         &self.data
     }
 }

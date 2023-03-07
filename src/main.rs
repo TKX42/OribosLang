@@ -2,9 +2,9 @@ extern crate chrono;
 
 use std::io::Write;
 
-use crate::expression::Expression;
+use crate::expression::{DataExpression, Expression};
 use crate::expression::Data;
-use crate::instruction::ExecutableInstruction;
+use crate::instruction::{ExecutableInstruction, Instruction};
 use crate::instruction::debug::DebugInstruction;
 use crate::instruction::print::PrintInstruction;
 use crate::instruction::time::TimeInstruction;
@@ -31,17 +31,23 @@ fn execute_instruction<'list, T>(name: &String, instruction_list: &'list Vec<Box
     None
 }
 
+fn exec(instruction: Box<dyn ExecutableInstruction>) {
+    println!("executing {}...", instruction.name());
+    match instruction.exec().evaluate() {
+        Data::String(s) => { println!("returned {}", s) }
+        Data::Number(n) => { println!("returned {}", n) }
+    }
+}
+
 fn main() {
     let instruction_list = vec![
-        TimeInstruction::init(&vec![]),
-        PrintInstruction::init(&vec![Expression::new(Data::String(String::from("Hello Oribos Lang!")))]),
-        DebugInstruction::init(&vec![Expression::new(Data::String(String::from("A debugging...\n\t\tmessage")))]),
-        DebugInstruction::init(&vec![Expression::new(Data::Number(42.0))]),
-        TimeInstruction::init(&vec![]),
+        PrintInstruction::init(&vec![Box::new(DataExpression::new(
+            TimeInstruction::init(&vec![]).exec().evaluate().clone()
+        ))]),
     ];
 
     for instruction in instruction_list {
-        instruction.exec();
+        exec(instruction);
     }
 
 

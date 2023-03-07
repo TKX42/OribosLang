@@ -1,6 +1,6 @@
 use chrono::Local;
 
-use crate::expression::{Data, Expression};
+use crate::expression::{Data, DataExpression, Expression};
 use crate::instruction::{ExecutableInstruction, Instruction};
 
 pub struct TimeInstruction {
@@ -12,14 +12,14 @@ impl ExecutableInstruction for TimeInstruction {
         &self.instruction.name
     }
 
-    fn init(parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
+    fn init(parameters: &Vec<Box<dyn Expression>>) -> Box<dyn ExecutableInstruction> {
         Box::new(TimeInstruction {
             instruction: Instruction::new("time".to_string())
         })
     }
 
-    fn exec(&self) {
+    fn exec(&self) -> Box<dyn Expression> {
         let date = Local::now();
-        println!("{}", date.format("%Y-%m-%d/%H:%M:%S:%f"));
+        Box::new(DataExpression::new(Data::String(format!("{}", date.format("%Y-%m-%d/%H:%M:%S:%f")))))
     }
 }

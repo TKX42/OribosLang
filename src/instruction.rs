@@ -18,8 +18,8 @@ impl Instruction {
 
 pub trait ExecutableInstruction {
     fn name(&self) -> &String;
-    fn init(parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> where Self: Sized;
-    fn exec(&self);
+    fn init(parameters: &Vec<Box<dyn Expression>>) -> Box<dyn ExecutableInstruction> where Self: Sized;
+    fn exec(&self) -> Box<dyn Expression>;
     fn info(&self) -> String {
         return format!("[instruction {}]", self.name());
     }
