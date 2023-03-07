@@ -117,7 +117,7 @@ impl ExecutableInstruction for TimeInstruction {
 
     fn exec(&self) {
         let date = Local::now();
-        println!("{}", date.format("%Y-%m-%d/%H:%M:%S"));
+        println!("{}", date.format("%Y-%m-%d/%H:%M:%S:%f"));
     }
 }
 
@@ -144,8 +144,10 @@ fn execute_instruction<'list, T>(name: &String, instruction_list: &'list Vec<Box
 
 fn main() {
     let instruction_list = vec![
-        PrintInstruction::init(&vec![Expression::new(Data::String("Hello Oribos Language!".parse().unwrap()))]),
-        DebugInstruction::init(&vec![Expression::new(Data::String("Debug message".parse().unwrap()))]),
+        TimeInstruction::init(&vec![]),
+        PrintInstruction::init(&vec![Expression::new(Data::String(String::from("Hello Oribos Lang!")))]),
+        DebugInstruction::init(&vec![Expression::new(Data::String(String::from("A debugging...\n\t\tmessage")))]),
+        DebugInstruction::init(&vec![Expression::new(Data::Number(42.0))]),
         TimeInstruction::init(&vec![]),
     ];
 

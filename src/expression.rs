@@ -1,7 +1,7 @@
 #[derive(Clone)]
 pub enum Data {
     String(String),
-    Number(i32),
+    Number(f64),
 }
 
 pub struct Expression {
