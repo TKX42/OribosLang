@@ -5,7 +5,7 @@ pub enum Data {
 }
 
 pub trait Expression {
-    fn evaluate(&self) -> &Data;
+    fn evaluate(&self) -> Data;
 }
 
 pub struct DataExpression {
@@ -25,7 +25,7 @@ impl DataExpression {
 }
 
 impl Expression for DataExpression {
-    fn evaluate(&self) -> &Data {
-        &self.data
+    fn evaluate(&self) -> Data {
+        self.data.clone()
     }
 }

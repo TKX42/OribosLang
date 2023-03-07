@@ -24,3 +24,9 @@ pub trait ExecutableInstruction {
         return format!("[instruction {}]", self.name());
     }
 }
+
+impl Expression for &dyn ExecutableInstruction {
+    fn evaluate(&self) -> Data {
+        self.exec().evaluate().clone()
+    }
+}

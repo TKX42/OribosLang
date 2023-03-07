@@ -1,6 +1,7 @@
 extern crate chrono;
 
 use std::io::Write;
+use std::ops::Deref;
 
 use crate::expression::{DataExpression, Expression};
 use crate::expression::Data;
@@ -40,11 +41,14 @@ fn exec(instruction: Box<dyn ExecutableInstruction>) {
 }
 
 fn main() {
+    let time_bp = TimeInstruction::init(&vec![]);
+    let time_instr = time_bp.deref().to_owned();
     let instruction_list = vec![
-        PrintInstruction::init(&vec![Box::new(DataExpression::new(
-            TimeInstruction::init(&vec![]).exec().evaluate().clone()
-        ))]),
+        PrintInstruction::init(&vec![Box::new(
+            time_instr
+        )]),
     ];
+
 
     for instruction in instruction_list {
         exec(instruction);
