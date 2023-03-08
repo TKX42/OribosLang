@@ -1,11 +1,14 @@
+use crate::instruction::ExecutableInstruction;
+
 #[derive(Clone)]
 pub enum Data {
     String(String),
     Number(f64),
 }
 
-pub trait Expression {
-    fn evaluate(&self) -> Data;
+pub enum Expression {
+    DataExpression(DataExpression),
+    ExecutableInstruction(Box<dyn ExecutableInstruction>),
 }
 
 pub struct DataExpression {
@@ -13,19 +16,24 @@ pub struct DataExpression {
 }
 
 impl DataExpression {
-    pub(crate) fn new(data: Data) -> DataExpression {
+    pub fn new(data: Data) -> DataExpression {
         DataExpression {
             data
         }
     }
 
-    pub(crate) fn empty() -> DataExpression {
+    pub fn empty() -> DataExpression {
         DataExpression::new(Data::Number(0.0))
+    }
+
+    pub fn evaluate(&self) -> Data {
+        self.data.clone()
     }
 }
 
-impl Expression for DataExpression {
-    fn evaluate(&self) -> Data {
-        self.data.clone()
+pub fn evaluate(expression: &Expression) -> Data {
+    match expression {
+        Expression::DataExpression(dexpr) => { dexpr.evaluate() }
+        Expression::ExecutableInstruction(instr) => { evaluate(&instr.exec()) }
     }
 }

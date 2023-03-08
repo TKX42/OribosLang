@@ -1,4 +1,4 @@
-use crate::expression::{Data, DataExpression, Expression};
+use crate::expression::{Data, DataExpression, evaluate, Expression};
 use crate::instruction::{ExecutableInstruction, Instruction};
 
 pub struct PrintInstruction {
@@ -11,16 +11,16 @@ impl ExecutableInstruction for PrintInstruction {
         return &self.instruction.name;
     }
 
-    fn init(parameters: &Vec<Box<dyn Expression>>) -> Box<dyn ExecutableInstruction> {
+    fn init(parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
         Box::new(PrintInstruction {
             instruction: Instruction::new("print".to_string()),
-            data: parameters.get(0).expect("Invalid parameter for Print").evaluate().clone(),
+            data: evaluate(parameters.get(0).expect("Invalid parameter for Print")),
         })
     }
 
-    fn exec(&self) -> Box<dyn Expression> {
+    fn exec(&self) -> Expression {
         print(&self.data);
-        Box::new(DataExpression::empty())
+        Expression::DataExpression(DataExpression::empty())
     }
 }
 

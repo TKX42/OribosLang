@@ -3,10 +3,9 @@ extern crate chrono;
 use std::io::Write;
 use std::ops::Deref;
 
-use crate::expression::{DataExpression, Expression};
+use crate::expression::{DataExpression, evaluate, Expression};
 use crate::expression::Data;
 use crate::instruction::{ExecutableInstruction, Instruction};
-use crate::instruction::debug::DebugInstruction;
 use crate::instruction::print::PrintInstruction;
 use crate::instruction::time::TimeInstruction;
 
@@ -34,19 +33,23 @@ fn execute_instruction<'list, T>(name: &String, instruction_list: &'list Vec<Box
 
 fn exec(instruction: Box<dyn ExecutableInstruction>) {
     println!("executing {}...", instruction.name());
-    match instruction.exec().evaluate() {
+    match evaluate(&instruction.exec()) {
         Data::String(s) => { println!("returned {}", s) }
         Data::Number(n) => { println!("returned {}", n) }
     }
 }
 
 fn main() {
-    let time_bp = TimeInstruction::init(&vec![]);
-    let time_instr = time_bp.deref().to_owned();
     let instruction_list = vec![
-        PrintInstruction::init(&vec![Box::new(
-            time_instr
-        )]),
+        // print("Hello World")
+        PrintInstruction::init(&vec![
+            Expression::DataExpression(DataExpression::new(Data::String("Hello World!".to_string())))
+        ]),
+
+        // print(time())
+        PrintInstruction::init(&vec![
+            Expression::ExecutableInstruction(TimeInstruction::init(&vec![]))
+        ]),
     ];
 
 

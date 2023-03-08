@@ -12,14 +12,14 @@ impl ExecutableInstruction for TimeInstruction {
         &self.instruction.name
     }
 
-    fn init(parameters: &Vec<Box<dyn Expression>>) -> Box<dyn ExecutableInstruction> {
+    fn init(parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
         Box::new(TimeInstruction {
             instruction: Instruction::new("time".to_string())
         })
     }
 
-    fn exec(&self) -> Box<dyn Expression> {
+    fn exec(&self) -> Expression {
         let date = Local::now();
-        Box::new(DataExpression::new(Data::String(format!("{}", date.format("%Y-%m-%d/%H:%M:%S:%f")))))
+        Expression::DataExpression(DataExpression::new(Data::String(format!("{}", date.format("%Y-%m-%d/%H:%M:%S:%f")))))
     }
 }
