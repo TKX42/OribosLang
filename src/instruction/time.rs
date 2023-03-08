@@ -12,7 +12,7 @@ impl ExecutableInstruction for TimeInstruction {
         &self.instruction.name
     }
 
-    fn init(parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
+    fn init(_parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
         Box::new(TimeInstruction {
             instruction: Instruction::new("time".to_string())
         })

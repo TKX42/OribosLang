@@ -1,0 +1,18 @@
+code = { (instr | CRLF)* }
+
+instr_name     = { word }
+instr          = { instr_name ~ "(" ~ parameter_list ~ ")" }
+parameter_list = { (parameter ~ ("," ~ " "+ ~ parameter)*)? }
+parameter      = { expression }
+expression     = { instr | primitive }
+
+primitive = { string | number }
+
+string = { "\"" ~ char* ~ "\"" }
+number = { digit+ }
+
+word   = { char+ }
+char   = { digit | alpha | " " }
+alpha  = { 'a'..'z' | 'A'..'Z' }
+digit  = { '0'..'9' }
+CRLF   = { "\r"? ~ "\n" | "\r" | "\n" }
