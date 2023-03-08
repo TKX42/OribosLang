@@ -13,6 +13,6 @@ number = { digit+ }
 
 word   = { char+ }
 char   = { digit | alpha | " " }
-alpha  = { 'a'..'z' | 'A'..'Z' }
-digit  = { '0'..'9' }
+alpha  = _{ 'a'..'z' | 'A'..'Z' }
+digit  = _{ '0'..'9' }
 CRLF   = { "\r"? ~ "\n" | "\r" | "\n" }
