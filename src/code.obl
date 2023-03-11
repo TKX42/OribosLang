@@ -1,1 +1,1 @@
-print((answer()*2))
+print((answer()*2-answer()))

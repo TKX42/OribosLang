@@ -119,7 +119,6 @@ fn create_instruction(instr_name: String, instr_parameters: Vec<Expression>) -> 
 }
 
 pub fn parse(code_str: &str) -> Vec<Box<dyn ExecutableInstruction>> {
-    println!("Parsing...");
     let mut ast: Vec<Box<dyn ExecutableInstruction>> = vec![];
 
     let code = OribosParser::parse(Rule::code, code_str).unwrap_or_else(|e| panic!("{}", e)).next().expect("Error parsing");

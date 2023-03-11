@@ -1,5 +1,5 @@
 // JUST FOR DEBUGGING PURPOSE
-use crate::expression::{Data, DataExpression, evaluate, Expression};
+use crate::expression::{Data, DataExpression, Expression};
 use crate::instruction::{ExecutableInstruction, Instruction};
 
 #[derive(Clone)]
@@ -12,7 +12,7 @@ impl ExecutableInstruction for AnswerInstruction {
         return &self.instruction.name;
     }
 
-    fn init(parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
+    fn init(_parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
         Box::new(AnswerInstruction {
             instruction: Instruction::new("answer".to_string()),
         })

@@ -17,6 +17,7 @@ fn exec(ast: Vec<Box<dyn ExecutableInstruction>>) {
 }
 
 fn demo_code() {
+    println!("Executing demo code...");
     let demo_code = include_str!("code.obl");
     let ast = parse(demo_code);
     exec(ast);

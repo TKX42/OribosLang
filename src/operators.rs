@@ -21,15 +21,15 @@ impl Operator for Add {
         let left_val = evaluate(left);
         let right_val = evaluate(right);
         match left_val {
-            Data::String(ls) => {
+            Data::String(_ls) => {
                 match right_val {
-                    Data::String(rs) => { panic!("Error: Cannot add type 'string' and 'string'") }
-                    Data::Number(rn) => { panic!("Error: Cannot add type 'string' and 'number'") }
+                    Data::String(_) => { panic!("Error: Cannot add type 'string' and 'string'") }
+                    Data::Number(_) => { panic!("Error: Cannot add type 'string' and 'number'") }
                 }
             }
             Data::Number(ln) => {
                 match right_val {
-                    Data::String(rs) => { panic!("Error: Cannot add type 'number' and 'string'") }
+                    Data::String(_) => { panic!("Error: Cannot add type 'number' and 'string'") }
                     Data::Number(rn) => { return Data::Number(ln + rn); }
                 }
             }
@@ -51,15 +51,15 @@ impl Operator for Sub {
         let left_val = evaluate(left);
         let right_val = evaluate(right);
         match left_val {
-            Data::String(ls) => {
+            Data::String(_ls) => {
                 match right_val {
-                    Data::String(rs) => { panic!("Error: Cannot sub type 'string' and 'string'") }
-                    Data::Number(rn) => { panic!("Error: Cannot sub type 'string' and 'number'") }
+                    Data::String(_) => { panic!("Error: Cannot sub type 'string' and 'string'") }
+                    Data::Number(_) => { panic!("Error: Cannot sub type 'string' and 'number'") }
                 }
             }
             Data::Number(ln) => {
                 match right_val {
-                    Data::String(rs) => { panic!("Error: Cannot sub type 'number' and 'string'") }
+                    Data::String(_) => { panic!("Error: Cannot sub type 'number' and 'string'") }
                     Data::Number(rn) => { return Data::Number(ln - rn); }
                 }
             }
@@ -81,15 +81,15 @@ impl Operator for Mul {
         let left_val = evaluate(left);
         let right_val = evaluate(right);
         match left_val {
-            Data::String(ls) => {
+            Data::String(_ls) => {
                 match right_val {
-                    Data::String(rs) => { panic!("Error: Cannot mul type 'string' and 'string'") }
-                    Data::Number(rn) => { panic!("Error: Cannot mul type 'string' and 'number'") }
+                    Data::String(_) => { panic!("Error: Cannot mul type 'string' and 'string'") }
+                    Data::Number(_) => { panic!("Error: Cannot mul type 'string' and 'number'") }
                 }
             }
             Data::Number(ln) => {
                 match right_val {
-                    Data::String(rs) => { panic!("Error: Cannot mul type 'number' and 'string'") }
+                    Data::String(_) => { panic!("Error: Cannot mul type 'number' and 'string'") }
                     Data::Number(rn) => { return Data::Number(ln * rn); }
                 }
             }
@@ -111,15 +111,15 @@ impl Operator for Div {
         let left_val = evaluate(left);
         let right_val = evaluate(right);
         match left_val {
-            Data::String(ls) => {
+            Data::String(_ls) => {
                 match right_val {
-                    Data::String(rs) => { panic!("Error: Cannot div type 'string' and 'string'") }
-                    Data::Number(rn) => { panic!("Error: Cannot div type 'string' and 'number'") }
+                    Data::String(_) => { panic!("Error: Cannot div type 'string' and 'string'") }
+                    Data::Number(_) => { panic!("Error: Cannot div type 'string' and 'number'") }
                 }
             }
             Data::Number(ln) => {
                 match right_val {
-                    Data::String(rs) => { panic!("Error: Cannot div type 'number' and 'string'") }
+                    Data::String(_) => { panic!("Error: Cannot div type 'number' and 'string'") }
                     Data::Number(rn) => { return Data::Number(ln / rn); }
                 }
             }
