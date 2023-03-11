@@ -4,6 +4,7 @@ use crate::expression::Expression;
 
 pub mod print;
 pub mod time;
+pub mod answer;
 
 #[derive(Clone)]
 pub struct Instruction {
