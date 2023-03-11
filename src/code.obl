@@ -1,4 +1,1 @@
-c = 7;
-c = 21;
-c = (1-c+c*10/10);
-print(c);
+print(true);

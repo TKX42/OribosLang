@@ -6,6 +6,7 @@ use crate::operators::Operator;
 pub enum Data {
     String(String),
     Number(f64),
+    Bool(bool),
 }
 
 #[derive(Clone, Debug)]

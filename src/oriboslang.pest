@@ -11,10 +11,13 @@ assignment =  { variable ~ " "* ~ equals ~ " "* ~ expression }
 equals     = _{ "=" }
 variable   =  { alpha+ }
 
-primitive = { string | number }
+primitive = { string | number | bool }
 
 string = { "\"" ~ char* ~ "\"" }
 number = { digit+ }
+bool = { true | false }
+true = { "true" }
+false = { "false" }
 
 operation = { sum }
 sum       = { product ~ ((add | sub) ~ product)* }

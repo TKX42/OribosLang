@@ -28,13 +28,18 @@ impl Operator for Add {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot add type 'string' and 'string'") }
                     Data::Number(_) => { panic!("Error: Cannot add type 'string' and 'number'") }
+                    Data::Bool(_) => { panic!("Error: Cannot add type 'string' and 'bool'") }
                 }
             }
             Data::Number(ln) => {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot add type 'number' and 'string'") }
+                    Data::Bool(_) => { panic!("Error: Cannot add type 'number' and 'bool'") }
                     Data::Number(rn) => { return Data::Number(ln + rn); }
                 }
+            }
+            Data::Bool(_) => {
+                panic!("Cannot perform addition on type 'bool'");
             }
         }
     }
@@ -58,13 +63,18 @@ impl Operator for Sub {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot sub type 'string' and 'string'") }
                     Data::Number(_) => { panic!("Error: Cannot sub type 'string' and 'number'") }
+                    Data::Bool(_) => { panic!("Error: Cannot sub type 'string' and 'bool'") }
                 }
             }
             Data::Number(ln) => {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot sub type 'number' and 'string'") }
+                    Data::Bool(_) => { panic!("Error: Cannot sub type 'number' and 'bool'") }
                     Data::Number(rn) => { return Data::Number(ln - rn); }
                 }
+            }
+            Data::Bool(_) => {
+                panic!("Cannot perform subtraction on type 'bool'");
             }
         }
     }
@@ -88,13 +98,18 @@ impl Operator for Mul {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot mul type 'string' and 'string'") }
                     Data::Number(_) => { panic!("Error: Cannot mul type 'string' and 'number'") }
+                    Data::Bool(_) => { panic!("Error: Cannot mul type 'string' and 'bool'") }
                 }
             }
             Data::Number(ln) => {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot mul type 'number' and 'string'") }
+                    Data::Bool(_) => { panic!("Error: Cannot mul type 'number' and 'bool'") }
                     Data::Number(rn) => { return Data::Number(ln * rn); }
                 }
+            }
+            Data::Bool(_) => {
+                panic!("Cannot perform multiplication on type 'bool'");
             }
         }
     }
@@ -118,13 +133,18 @@ impl Operator for Div {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot div type 'string' and 'string'") }
                     Data::Number(_) => { panic!("Error: Cannot div type 'string' and 'number'") }
+                    Data::Bool(_) => { panic!("Error: Cannot div type 'string' and 'bool'") }
                 }
             }
             Data::Number(ln) => {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot div type 'number' and 'string'") }
+                    Data::Bool(_) => { panic!("Error: Cannot div type 'number' and 'bool'") }
                     Data::Number(rn) => { return Data::Number(ln / rn); }
                 }
+            }
+            Data::Bool(_) => {
+                panic!("Cannot perform division on type 'bool'");
             }
         }
     }

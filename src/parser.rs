@@ -31,11 +31,16 @@ fn get_number(s: &str) -> Data {
     Data::Number(s.parse().unwrap())
 }
 
+fn get_bool(s: &str) -> Data {
+    Data::Bool(s.parse().unwrap())
+}
+
 fn parse_primitive(primitive: Pair<Rule>) -> Expression {
     for primitive_type in primitive.into_inner() {
         match primitive_type.as_rule() {
             Rule::string => { return Expression::DataExpression(DataExpression::new(get_string(primitive_type.as_str()))); }
             Rule::number => { return Expression::DataExpression(DataExpression::new(get_number(primitive_type.as_str()))); }
+            Rule::bool => { return Expression::DataExpression(DataExpression::new(get_bool(primitive_type.as_str()))); }
             _ => unreachable!()
         };
     }
