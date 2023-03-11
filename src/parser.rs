@@ -169,16 +169,19 @@ fn get_var_id(var_name: String, identifier_table: &mut IdentifierTable) -> i64 {
 
 fn parse_if_expr(if_expr: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
     let mut comparison = Expression::DataExpression(DataExpression::empty());
-    let mut statements = vec![];
+    let mut true_statements = vec![];
+    let mut else_statements = vec![];
+
     for field in if_expr.into_inner() {
         match field.as_rule() {
             Rule::comparison => { comparison = parse_operation(field, identifier_table) }
-            Rule::statements => { statements = parse_statements(identifier_table, field) }
+            Rule::statements => { true_statements = parse_statements(identifier_table, field) }
+            Rule::else_expr => { else_statements = parse_statements(identifier_table, field.into_inner().next().expect("Error: No else statements given")) }
             _ => unreachable!()
         }
     }
 
-    IfInstruction::new(comparison, statements)
+    IfInstruction::new(comparison, true_statements, else_statements)
 }
 
 fn parse_statement(statement: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {

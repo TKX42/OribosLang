@@ -13,7 +13,10 @@ assign     = _{ "=" }
 variable   =  { alpha+ }
 
 if_expr    = {
-    "if" ~ open_bracket ~ comparison ~ closing_bracket ~ opening_block ~ statements ~ closing_block
+    "if" ~ open_bracket ~ comparison ~ closing_bracket ~ opening_block ~ statements ~ closing_block ~ CRLF* ~ else_expr?
+}
+else_expr  = {
+    "else" ~ opening_block ~ statements ~ closing_block
 }
 statements = { (" "* ~ statement | CRLF)* }
 
@@ -31,10 +34,10 @@ product   = { value ~ ((mul | div | modulo) ~ value)* }
 
 value = { (instr | primitive | variable) | ("(" ~ operation ~ ")") }
 
-add = { "+" }
-sub = { "-" }
-mul = { "*" }
-div = { "/" }
+add    = { "+" }
+sub    = { "-" }
+mul    = { "*" }
+div    = { "/" }
 modulo = { "%" }
 
 comparison = { value ~ equals ~ value }

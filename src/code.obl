@@ -1,1 +1,7 @@
-print(8%5);
+x = 23;
+if((x%2)==0){
+    print("x is even");
+}
+else{
+print("x is not even");
+};

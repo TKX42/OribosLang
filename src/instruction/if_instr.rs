@@ -5,14 +5,16 @@ use crate::interpreter::Interpreter;
 #[derive(Clone, Debug)]
 pub struct IfInstruction {
     comparison: Expression,
-    statements: Vec<Box<dyn ExecutableInstruction>>,
+    true_statements: Vec<Box<dyn ExecutableInstruction>>,
+    else_statements: Vec<Box<dyn ExecutableInstruction>>,
 }
 
 impl IfInstruction {
-    pub fn new(comparison: Expression, statements: Vec<Box<dyn ExecutableInstruction>>) -> Box<dyn ExecutableInstruction> {
+    pub fn new(comparison: Expression, true_statements: Vec<Box<dyn ExecutableInstruction>>, else_statements: Vec<Box<dyn ExecutableInstruction>>) -> Box<dyn ExecutableInstruction> {
         Box::new(IfInstruction {
             comparison,
-            statements,
+            true_statements,
+            else_statements,
         })
     }
 }
@@ -34,10 +36,14 @@ impl ExecutableInstruction for IfInstruction {
             Data::Number(_) => { panic!("Error: Invalid type 'number' given as expression for if instruction") }
             Data::Bool(b) => {
                 if b {
-                    for instr in &self.statements {
+                    for instr in &self.true_statements {
                         instr.exec(interpreter);
                     }
-                } else {}
+                } else {
+                    for instr in &self.else_statements {
+                        instr.exec(interpreter);
+                    }
+                }
             }
         }
 
