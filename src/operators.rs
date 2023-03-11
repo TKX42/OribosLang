@@ -189,3 +189,34 @@ impl Operator for Equals {
     }
 }
 // endregion
+
+// region "Modulo"
+#[derive(Clone, Debug)]
+pub struct Modulo {}
+
+impl Operator for Modulo {
+    fn new() -> Box<dyn Operator> where Self: Sized {
+        Box::new(Modulo {})
+    }
+
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
+        let left_val = evaluate(left, interpreter);
+        let right_val = evaluate(right, interpreter);
+        match left_val {
+            Data::String(_) => {
+                panic!("Cannot perform modulo on type 'string'")
+            }
+            Data::Number(ln) => {
+                match right_val {
+                    Data::String(_) => { panic!("Error: Cannot mod type 'number' and 'string'") }
+                    Data::Bool(_) => { panic!("Error: Cannot mod type 'number' and 'bool'") }
+                    Data::Number(rn) => { return Data::Number(ln % rn); }
+                }
+            }
+            Data::Bool(_) => {
+                panic!("Cannot perform modulo on type 'bool'");
+            }
+        }
+    }
+}
+// endregion

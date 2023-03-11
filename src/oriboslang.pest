@@ -12,14 +12,14 @@ assignment =  { variable ~ " "* ~ assign ~ " "* ~ expression }
 assign     = _{ "=" }
 variable   =  { alpha+ }
 
-if_expr = {
+if_expr    = {
     "if" ~ open_bracket ~ comparison ~ closing_bracket ~ opening_block ~ statements ~ closing_block
 }
-statements = {(" "* ~ statement | CRLF)*}
+statements = { (" "* ~ statement | CRLF)* }
 
 primitive = { string | number | bool }
 
-string = { "\"" ~ (char|" ")* ~ "\"" }
+string = { "\"" ~ (char | " ")* ~ "\"" }
 number = { digit+ }
 bool   = { true | false }
 true   = { "true" }
@@ -27,7 +27,7 @@ false  = { "false" }
 
 operation = { comparison | sum }
 sum       = { product ~ ((add | sub) ~ product)* }
-product   = { value ~ ((mul | div) ~ value)* }
+product   = { value ~ ((mul | div | modulo) ~ value)* }
 
 value = { (instr | primitive | variable) | ("(" ~ operation ~ ")") }
 
@@ -35,6 +35,7 @@ add = { "+" }
 sub = { "-" }
 mul = { "*" }
 div = { "/" }
+modulo = { "%" }
 
 comparison = { value ~ equals ~ value }
 equals     = { "==" }
