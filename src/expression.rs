@@ -1,4 +1,5 @@
 use crate::instruction::ExecutableInstruction;
+use crate::interpreter::Interpreter;
 use crate::operators::Operator;
 
 #[derive(Clone, Debug)]
@@ -51,15 +52,23 @@ impl OperationExpression {
         }
     }
 
-    pub fn evaluate(&self) -> Data {
-        self.operator.evaluate(&self.left, &self.right)
+    pub fn evaluate(&self, interpreter: &mut Interpreter) -> Data {
+        self.operator.evaluate(&self.left, &self.right, interpreter)
     }
 }
 
-pub fn evaluate(expression: &Expression) -> Data {
+pub fn evaluate(expression: &Expression, interpreter: &mut Interpreter) -> Data {
     match expression {
         Expression::DataExpression(dexpr) => { dexpr.evaluate() }
-        Expression::ExecutableInstruction(instr) => { evaluate(&instr.exec()) }
-        Expression::OperationExpression(opexpr) => { opexpr.evaluate() }
+        Expression::ExecutableInstruction(instr) => { evaluate(&instr.exec(interpreter), interpreter) }
+        Expression::OperationExpression(opexpr) => { opexpr.evaluate(interpreter) }
+    }
+}
+
+// util
+pub fn get_string(data: Data) -> String {
+    match data {
+        Data::String(s) => { s }
+        _ => panic!("Error, could not get string value of {:?}", data)
     }
 }

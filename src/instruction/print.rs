@@ -1,5 +1,6 @@
 use crate::expression::{Data, DataExpression, evaluate, Expression};
 use crate::instruction::ExecutableInstruction;
+use crate::interpreter::Interpreter;
 
 #[derive(Clone, Debug)]
 pub struct PrintInstruction {
@@ -17,8 +18,8 @@ impl ExecutableInstruction for PrintInstruction {
         })
     }
 
-    fn exec(&self) -> Expression {
-        print(&evaluate(&self.data));
+    fn exec(&self, interpreter: &mut Interpreter) -> Expression {
+        print(&evaluate(&self.data, interpreter));
         Expression::DataExpression(DataExpression::empty())
     }
 }

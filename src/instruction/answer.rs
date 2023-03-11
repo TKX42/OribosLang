@@ -1,6 +1,7 @@
 // JUST FOR DEBUGGING PURPOSE
 use crate::expression::{Data, DataExpression, Expression};
 use crate::instruction::ExecutableInstruction;
+use crate::interpreter::Interpreter;
 
 #[derive(Clone, Debug)]
 pub struct AnswerInstruction {}
@@ -14,7 +15,7 @@ impl ExecutableInstruction for AnswerInstruction {
         Box::new(AnswerInstruction {})
     }
 
-    fn exec(&self) -> Expression {
+    fn exec(&self, interpreter: &mut Interpreter) -> Expression {
         Expression::DataExpression(DataExpression::new(Data::Number(42.0)))
     }
 }

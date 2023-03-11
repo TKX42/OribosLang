@@ -1,12 +1,14 @@
 use std::fmt::Debug;
+
 use dyn_clone::DynClone;
 
 use crate::expression::{Data, evaluate, Expression};
+use crate::interpreter::Interpreter;
 
 dyn_clone::clone_trait_object!(Operator);
 pub trait Operator: DynClone + Debug {
     fn new() -> Box<dyn Operator> where Self: Sized;
-    fn evaluate(&self, left: &Expression, right: &Expression) -> Data;
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data;
 }
 
 // region "Add"
@@ -18,9 +20,9 @@ impl Operator for Add {
         Box::new(Add {})
     }
 
-    fn evaluate(&self, left: &Expression, right: &Expression) -> Data {
-        let left_val = evaluate(left);
-        let right_val = evaluate(right);
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
+        let left_val = evaluate(left, interpreter);
+        let right_val = evaluate(right, interpreter);
         match left_val {
             Data::String(_ls) => {
                 match right_val {
@@ -48,9 +50,9 @@ impl Operator for Sub {
         Box::new(Sub {})
     }
 
-    fn evaluate(&self, left: &Expression, right: &Expression) -> Data {
-        let left_val = evaluate(left);
-        let right_val = evaluate(right);
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
+        let left_val = evaluate(left, interpreter);
+        let right_val = evaluate(right, interpreter);
         match left_val {
             Data::String(_ls) => {
                 match right_val {
@@ -78,9 +80,9 @@ impl Operator for Mul {
         Box::new(Mul {})
     }
 
-    fn evaluate(&self, left: &Expression, right: &Expression) -> Data {
-        let left_val = evaluate(left);
-        let right_val = evaluate(right);
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
+        let left_val = evaluate(left, interpreter);
+        let right_val = evaluate(right, interpreter);
         match left_val {
             Data::String(_ls) => {
                 match right_val {
@@ -108,9 +110,9 @@ impl Operator for Div {
         Box::new(Div {})
     }
 
-    fn evaluate(&self, left: &Expression, right: &Expression) -> Data {
-        let left_val = evaluate(left);
-        let right_val = evaluate(right);
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
+        let left_val = evaluate(left, interpreter);
+        let right_val = evaluate(right, interpreter);
         match left_val {
             Data::String(_ls) => {
                 match right_val {

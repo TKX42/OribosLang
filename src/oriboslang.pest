@@ -1,10 +1,15 @@
-code = { (instr | CRLF)* }
+code = { ((statement) | CRLF)* }
 
+statement      = { (instr | assignment) ~ ";" }
 instr_name     = { word }
 instr          = { instr_name ~ "(" ~ parameter_list ~ ")" }
 parameter_list = { (parameter ~ ("," ~ " "+ ~ parameter)*)? }
 parameter      = { expression }
 expression     = { instr | primitive | operation }
+
+assignment    = { variable ~ equals ~ expression }
+equals        = _{ "=" }
+variable      = { word }
 
 primitive = { string | number }
 
@@ -22,8 +27,9 @@ sub = { "-" }
 mul = { "*" }
 div = { "/" }
 
-word  =  { char+ }
-char  = _{ digit | alpha | " " }
-alpha = _{ 'a'..'z' | 'A'..'Z' }
-digit = _{ '0'..'9' }
-CRLF  = _{ "\r"? ~ "\n" | "\r" | "\n" }
+word       =  { char+ }
+char       = _{ digit | alpha }
+alpha      = _{ 'a'..'z' | 'A'..'Z' }
+digit      = _{ '0'..'9' }
+CRLF       = _{ "\r"? ~ "\n" | "\r" | "\n" }
+WHITESPACE = _{ " " }

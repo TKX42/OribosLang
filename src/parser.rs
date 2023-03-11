@@ -5,6 +5,7 @@ use pest::Parser;
 
 use crate::expression::{Data, DataExpression, Expression, OperationExpression};
 use crate::instruction::answer::AnswerInstruction;
+use crate::instruction::assignment::AssignmentInstruction;
 use crate::instruction::ExecutableInstruction;
 use crate::instruction::print::PrintInstruction;
 use crate::instruction::time::TimeInstruction;
@@ -118,14 +119,41 @@ fn create_instruction(instr_name: String, instr_parameters: Vec<Expression>) -> 
     }
 }
 
+fn parse_assignment(assignment: Pair<Rule>) -> Box<dyn ExecutableInstruction> {
+    let mut var_name = String::new();
+    let mut var_expression = Expression::DataExpression(DataExpression::empty());
+
+    for assignment_field in assignment.into_inner() {
+        match assignment_field.as_rule() {
+            Rule::variable => { var_name = assignment_field.as_str().to_string() }
+            Rule::expression => { var_expression = parse_expression(assignment_field) }
+            _ => unreachable!()
+        }
+    }
+
+    AssignmentInstruction::new(var_name, var_expression)
+}
+
+fn parse_statement(statement: Pair<Rule>) -> Box<dyn ExecutableInstruction> {
+    for statement_type in statement.into_inner() {
+        match statement_type.as_rule() {
+            Rule::instr => { return parse_instr(statement_type); }
+            Rule::assignment => { return parse_assignment(statement_type); }
+            _ => unreachable!()
+        };
+    }
+
+    panic!("Error: Could not parse statement")
+}
+
 pub fn parse(code_str: &str) -> Vec<Box<dyn ExecutableInstruction>> {
     let mut ast: Vec<Box<dyn ExecutableInstruction>> = vec![];
 
     let code = OribosParser::parse(Rule::code, code_str).unwrap_or_else(|e| panic!("{}", e)).next().expect("Error parsing");
-    for instr in code.into_inner() {
-        match instr.as_rule() {
-            Rule::instr => {
-                ast.push(parse_instr(instr));
+    for statement in code.into_inner() {
+        match statement.as_rule() {
+            Rule::statement => {
+                ast.push(parse_statement(statement));
             }
             _ => unreachable!(),
         }
