@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+use std::hash::Hash;
 use std::ops::Deref;
 
 use pest::iterators::Pair;
@@ -14,6 +16,11 @@ use crate::operators::{Add, Div, Mul, Operator, Sub};
 #[derive(Parser)]
 #[grammar = "oriboslang.pest"]
 pub struct OribosParser;
+
+struct IdentifierTable {
+    i: i64,
+    identifier: HashMap<String, i64>,
+}
 
 fn get_string(s: &str) -> Data {
     Data::String(String::from(&s[1..s.len() - 1]))
@@ -119,7 +126,7 @@ fn create_instruction(instr_name: String, instr_parameters: Vec<Expression>) -> 
     }
 }
 
-fn parse_assignment(assignment: Pair<Rule>) -> Box<dyn ExecutableInstruction> {
+fn parse_assignment(assignment: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
     let mut var_name = String::new();
     let mut var_expression = Expression::DataExpression(DataExpression::empty());
 
@@ -131,14 +138,25 @@ fn parse_assignment(assignment: Pair<Rule>) -> Box<dyn ExecutableInstruction> {
         }
     }
 
-    AssignmentInstruction::new(var_name, var_expression)
+    AssignmentInstruction::new(get_var_id(var_name, identifier_table), var_expression)
 }
 
-fn parse_statement(statement: Pair<Rule>) -> Box<dyn ExecutableInstruction> {
+fn get_var_id(var_name: String, identifier_table: &mut IdentifierTable) -> i64 {
+    return match identifier_table.identifier.get(&*var_name) {
+        None => {
+            identifier_table.i += 1;
+            identifier_table.identifier.insert(var_name, identifier_table.i);
+            identifier_table.i
+        }
+        Some(x) => { *x }
+    };
+}
+
+fn parse_statement(statement: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
     for statement_type in statement.into_inner() {
         match statement_type.as_rule() {
             Rule::instr => { return parse_instr(statement_type); }
-            Rule::assignment => { return parse_assignment(statement_type); }
+            Rule::assignment => { return parse_assignment(statement_type, identifier_table); }
             _ => unreachable!()
         };
     }
@@ -148,12 +166,13 @@ fn parse_statement(statement: Pair<Rule>) -> Box<dyn ExecutableInstruction> {
 
 pub fn parse(code_str: &str) -> Vec<Box<dyn ExecutableInstruction>> {
     let mut ast: Vec<Box<dyn ExecutableInstruction>> = vec![];
+    let mut identifier_table = IdentifierTable { i: 0, identifier: Default::default() };
 
     let code = OribosParser::parse(Rule::code, code_str).unwrap_or_else(|e| panic!("{}", e)).next().expect("Error parsing");
     for statement in code.into_inner() {
         match statement.as_rule() {
             Rule::statement => {
-                ast.push(parse_statement(statement));
+                ast.push(parse_statement(statement, &mut identifier_table));
             }
             _ => unreachable!(),
         }

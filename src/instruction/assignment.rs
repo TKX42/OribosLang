@@ -4,14 +4,14 @@ use crate::interpreter::Interpreter;
 
 #[derive(Clone, Debug)]
 pub struct AssignmentInstruction {
-    var_name: String,
+    var_id: i64,
     var_expression: Expression,
 }
 
 impl AssignmentInstruction {
-    pub fn new(var_name: String, var_expression: Expression) -> Box<dyn ExecutableInstruction> {
+    pub fn new(var_id: i64, var_expression: Expression) -> Box<dyn ExecutableInstruction> {
         Box::new(AssignmentInstruction {
-            var_name,
+            var_id: var_id,
             var_expression,
         })
     }
@@ -29,7 +29,8 @@ impl ExecutableInstruction for AssignmentInstruction {
 
     fn exec(&self, interpreter: &mut Interpreter) -> Expression {
         println!("ASSIGNMENT");
-        interpreter.add_var();
-        Expression::DataExpression(DataExpression::empty())
+        let expr = evaluate(&self.var_expression, interpreter);
+        interpreter.memory().add(self.var_id, expr);
+        self.var_expression.clone()
     }
 }

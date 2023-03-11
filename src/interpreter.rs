@@ -21,8 +21,7 @@ impl Interpreter {
         }
     }
 
-    pub fn add_var(&mut self) {
-        self.memory.add();
-        println!("ADDING VARIABLE");
+    pub fn memory(&mut self) -> &mut Memory {
+        &mut self.memory
     }
 }

@@ -1,14 +1,21 @@
+use std::collections::HashMap;
+use std::iter::Map;
+
+use crate::expression::{Data, Expression};
+
 #[derive(Debug)]
 pub struct Memory {
-    i: i64,
+    mem: HashMap<i64, Data>,
 }
 
 impl Memory {
     pub fn new() -> Memory {
-        Memory { i: 0 }
+        Memory {
+            mem: HashMap::new()
+        }
     }
 
-    pub fn add(&mut self) {
-        self.i += 1;
+    pub fn add(&mut self, id: i64, val: Data) {
+        self.mem.insert(id, val);
     }
 }
