@@ -1,7 +1,6 @@
-x = 23;
-if((x%2)==0){
-    print("x is even");
-}
-else{
-print("x is not even");
+x = 42;
+if(x==42){
+    if(x==42){
+        print(x);
+    };
 };

@@ -10,13 +10,13 @@ expression     = { instr | operation | primitive | variable }
 
 assignment =  { variable ~ " "* ~ assign ~ " "* ~ expression }
 assign     = _{ "=" }
-variable   =  { alpha+ }
+variable   =  { word }
 
 if_expr    = {
-    "if" ~ open_bracket ~ comparison ~ closing_bracket ~ opening_block ~ statements ~ closing_block ~ CRLF* ~ else_expr?
+    "if" ~ open_bracket ~ comparison ~ closing_bracket ~ opening_block ~ " "* ~ statements ~ " "* ~ closing_block ~ CRLF* ~ else_expr?
 }
 else_expr  = {
-    "else" ~ opening_block ~ statements ~ closing_block
+    "else" ~ " "* ~ opening_block ~ statements ~ " "* ~ closing_block
 }
 statements = { (" "* ~ statement | CRLF)* }
 
