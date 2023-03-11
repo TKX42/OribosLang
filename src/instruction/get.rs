@@ -26,6 +26,6 @@ impl ExecutableInstruction for GetInstruction {
     }
 
     fn exec(&self, interpreter: &mut Interpreter) -> Expression {
-        Expression::DataExpression(DataExpression::new(interpreter.memory().get(self.var_id).clone()))      // TODO: evaluate clone for runtime performance
+        Expression::DataExpression(DataExpression::new(interpreter.memory().get(self.var_id).clone()))      // !!! TODO: evaluate clone for runtime performance
     }
 }

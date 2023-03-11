@@ -1,27 +1,26 @@
-use std::collections::HashMap;
-use std::hash::BuildHasherDefault;
-
-use nohash_hasher::NoHashHasher;
-
 use crate::expression::Data;
 
 #[derive(Debug)]
 pub struct Memory {
-    mem: HashMap<i64, Data, BuildHasherDefault<NoHashHasher<i64>>>,
+    mem: Vec<Data>,
 }
 
 impl Memory {
     pub fn new() -> Memory {
         Memory {
-            mem: HashMap::with_hasher(BuildHasherDefault::default())
+            mem: vec![]
         }
     }
 
     pub fn assign(&mut self, id: i64, val: Data) {
-        self.mem.insert(id, val);
+        if self.mem.len() < id as usize {
+            self.mem.push(val);
+        } else {
+            self.mem[(id - 1) as usize] = val;
+        }
     }
 
     pub fn get(&self, id: i64) -> &Data {
-        self.mem.get(&id).unwrap()
+        self.mem.get((id - 1) as usize).unwrap()
     }
 }

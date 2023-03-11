@@ -30,6 +30,6 @@ impl ExecutableInstruction for AssignmentInstruction {
     fn exec(&self, interpreter: &mut Interpreter) -> Expression {
         let expr = evaluate(&self.var_expression, interpreter);
         interpreter.memory().assign(self.var_id, expr);
-        self.var_expression.clone()
+        self.var_expression.clone()     // TODO evaluate performance
     }
 }
