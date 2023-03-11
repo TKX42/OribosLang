@@ -127,7 +127,6 @@ pub fn parse(code_str: &str) -> Vec<Box<dyn ExecutableInstruction>> {
             Rule::instr => {
                 ast.push(parse_instr(instr));
             }
-            Rule::CRLF => {}        // ignore
             _ => unreachable!(),
         }
     }
