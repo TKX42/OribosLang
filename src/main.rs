@@ -19,7 +19,7 @@ fn demo_code() {
     //println!("{:#?}", ast);
     let mut interpreter = Interpreter::new(ast);
     interpreter.run();
-    //println!("{:#?}", interpreter);
+    println!("{:#?}", interpreter);
 }
 
 fn main() {

@@ -5,10 +5,10 @@ instr_name     = { word }
 instr          = { instr_name ~ "(" ~ parameter_list ~ ")" }
 parameter_list = { (parameter ~ ("," ~ " "+ ~ parameter)*)? }
 parameter      = { expression }
-expression     = { instr | primitive | operation | variable }
+expression     = { instr | operation | primitive | variable }
 
-assignment =  { variable ~ " "* ~ equals ~ " "* ~ expression }
-equals     = _{ "=" }
+assignment =  { variable ~ " "* ~ assign ~ " "* ~ expression }
+assign     = _{ "=" }
 variable   =  { alpha+ }
 
 primitive = { string | number | bool }
@@ -19,7 +19,7 @@ bool = { true | false }
 true = { "true" }
 false = { "false" }
 
-operation = { sum }
+operation = { comparison | sum }
 sum       = { product ~ ((add | sub) ~ product)* }
 product   = { value ~ ((mul | div) ~ value)* }
 
@@ -29,6 +29,9 @@ add = { "+" }
 sub = { "-" }
 mul = { "*" }
 div = { "/" }
+
+comparison = { value ~ equals ~ value }
+equals = {"=="}
 
 word  =  { char+ }
 char  = _{ digit | alpha }

@@ -150,3 +150,42 @@ impl Operator for Div {
     }
 }
 // endregion
+
+// region "Equals"
+#[derive(Clone, Debug)]
+pub struct Equals {}
+
+impl Operator for Equals {
+    fn new() -> Box<dyn Operator> where Self: Sized {
+        Box::new(Equals {})
+    }
+
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
+        let left_val = evaluate(left, interpreter);
+        let right_val = evaluate(right, interpreter);
+        match left_val {
+            Data::String(ls) => {
+                match right_val {
+                    Data::String(rs) => { return Data::Bool(ls == rs); }
+                    Data::Number(_) => { panic!("Error: Cannot equals type 'string' and 'number'") }
+                    Data::Bool(_) => { panic!("Error: Cannot equals type 'string' and 'bool'") }
+                }
+            }
+            Data::Number(ln) => {
+                match right_val {
+                    Data::String(_) => { panic!("Error: Cannot equals type 'number' and 'string'") }
+                    Data::Bool(_) => { panic!("Error: Cannot equals type 'number' and 'bool'") }
+                    Data::Number(rn) => { return Data::Bool(ln == rn); }
+                }
+            }
+            Data::Bool(lb) => {
+                match right_val {
+                    Data::String(_) => { panic!("Error: Cannot equals type 'bool' and 'string'") }
+                    Data::Number(_) => { panic!("Error: Cannot equals type 'bool' and 'number'") }
+                    Data::Bool(rb) => { return Data::Bool(lb == rb); }
+                }
+            }
+        }
+    }
+}
+// endregion

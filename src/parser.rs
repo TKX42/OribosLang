@@ -12,7 +12,7 @@ use crate::instruction::ExecutableInstruction;
 use crate::instruction::get::GetInstruction;
 use crate::instruction::print::PrintInstruction;
 use crate::instruction::time::TimeInstruction;
-use crate::operators::{Add, Div, Mul, Operator, Sub};
+use crate::operators::{Add, Div, Equals, Mul, Operator, Sub};
 
 #[derive(Parser)]
 #[grammar = "oriboslang.pest"]
@@ -59,6 +59,7 @@ fn parse_operation(operation: Pair<Rule>, identifier_table: &mut IdentifierTable
             Rule::sub => { operators.push(Sub::new()) }
             Rule::mul => { operators.push(Mul::new()) }
             Rule::div => { operators.push(Div::new()) }
+            Rule::equals => { operators.push(Equals::new()) }
             _ => { operations.push(parse_operation(operation_type, identifier_table)) }       // operation needs to be further resolved
         }
     }
