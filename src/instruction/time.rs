@@ -3,6 +3,7 @@ use chrono::Local;
 use crate::expression::{Data, DataExpression, Expression};
 use crate::instruction::{ExecutableInstruction, Instruction};
 
+#[derive(Clone)]
 pub struct TimeInstruction {
     instruction: Instruction,
 }

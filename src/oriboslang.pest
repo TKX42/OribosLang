@@ -4,15 +4,26 @@ instr_name     = { word }
 instr          = { instr_name ~ "(" ~ parameter_list ~ ")" }
 parameter_list = { (parameter ~ ("," ~ " "+ ~ parameter)*)? }
 parameter      = { expression }
-expression     = { instr | primitive }
+expression     = { instr | primitive | operation }
 
 primitive = { string | number }
 
 string = { "\"" ~ char* ~ "\"" }
 number = { digit+ }
 
-word   = { char+ }
-char   = { digit | alpha | " " }
-alpha  = _{ 'a'..'z' | 'A'..'Z' }
-digit  = _{ '0'..'9' }
-CRLF   = { "\r"? ~ "\n" | "\r" | "\n" }
+operation = { sum }
+sum       = { product ~ ((add | sub) ~ product)* }
+product   = { value ~ ((mul | div) ~ value)* }
+
+value = { (instr | primitive) | ("(" ~ operation ~ ")") }
+
+add = { "+" }
+sub = { "-" }
+mul = { "*" }
+div = { "/" }
+
+word  =  { char+ }
+char  = _{ digit | alpha | " " }
+alpha = _{ 'a'..'z' | 'A'..'Z' }
+digit = _{ '0'..'9' }
+CRLF  = _{ "\r"? ~ "\n" | "\r" | "\n" }

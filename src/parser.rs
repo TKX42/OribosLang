@@ -1,10 +1,13 @@
+use std::ops::Deref;
+
 use pest::iterators::Pair;
 use pest::Parser;
 
-use crate::expression::{Data, DataExpression, Expression};
+use crate::expression::{Data, DataExpression, Expression, OperationExpression};
 use crate::instruction::ExecutableInstruction;
 use crate::instruction::print::PrintInstruction;
 use crate::instruction::time::TimeInstruction;
+use crate::operators::{Add, Div, Mul, Operator, Sub};
 
 #[derive(Parser)]
 #[grammar = "oriboslang.pest"]
@@ -30,11 +33,45 @@ fn parse_primitive(primitive: Pair<Rule>) -> Expression {
     panic!("Error: Could not parse primitive!");
 }
 
+fn parse_operation(operation: Pair<Rule>) -> Expression {
+    let mut operations: Vec<Expression> = vec![];
+    let mut operators: Vec<Box<dyn Operator>> = vec![];
+
+    for operation_type in operation.into_inner() {
+        match operation_type.as_rule() {
+            Rule::value => { operations.push(parse_value(operation_type)) }
+            Rule::add => { operators.push(Add::new()) }
+            Rule::sub => { operators.push(Sub::new()) }
+            Rule::mul => { operators.push(Mul::new()) }
+            Rule::div => { operators.push(Div::new()) }
+            _ => { operations.push(parse_operation(operation_type)) }       // operation needs to be further resolved
+        }
+    }
+
+    parse_operations(operations, operators)
+}
+
+fn parse_operations(operations: Vec<Expression>, operators: Vec<Box<dyn Operator>>) -> Expression {
+    if operations.len() == 1 {
+        return operations.deref().get(0).cloned().unwrap();
+    } else {
+        let left_operation = parse_operations(operations.get(0..operations.len() - 1).unwrap().to_vec(), operators.get(0..operators.len() - 1).unwrap().to_vec());
+        let right_operation = operations.get(operations.len() - 1).cloned().unwrap();
+        let operator = operators.get(operators.len() - 1).cloned().unwrap();
+        return Expression::OperationExpression(Box::new(OperationExpression::new(left_operation, right_operation, operator)));
+    }
+}
+
+fn parse_value(value: Pair<Rule>) -> Expression {
+    return parse_expression(value);     // workaround because of parser not allowing left-recursion
+}
+
 fn parse_expression(expression: Pair<Rule>) -> Expression {
     for expression_type in expression.into_inner() {
         match expression_type.as_rule() {
             Rule::primitive => { return parse_primitive(expression_type); }
             Rule::instr => { return Expression::ExecutableInstruction(parse_instr(expression_type)); }
+            Rule::operation => { return parse_operation(expression_type); }
             _ => unreachable!()
         }
     }
@@ -80,12 +117,10 @@ fn create_instruction(instr_name: String, instr_parameters: Vec<Expression>) -> 
 }
 
 pub fn parse(code_str: &str) -> Vec<Box<dyn ExecutableInstruction>> {
+    println!("Parsing...");
     let mut ast: Vec<Box<dyn ExecutableInstruction>> = vec![];
 
-    let code = OribosParser::parse(Rule::code, code_str)
-        .expect("Error: Unsuccessful parse")
-        .next().unwrap();
-
+    let code = OribosParser::parse(Rule::code, code_str).unwrap_or_else(|e| panic!("{}", e)).next().expect("Error parsing");
     for instr in code.into_inner() {
         match instr.as_rule() {
             Rule::instr => {

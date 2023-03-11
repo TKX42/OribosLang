@@ -1,6 +1,7 @@
 use crate::expression::{Data, DataExpression, evaluate, Expression};
 use crate::instruction::{ExecutableInstruction, Instruction};
 
+#[derive(Clone)]
 pub struct PrintInstruction {
     instruction: Instruction,
     data: Data,

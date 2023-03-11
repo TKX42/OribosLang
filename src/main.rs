@@ -8,6 +8,7 @@ use crate::parser::parse;
 mod expression;
 mod instruction;
 mod parser;
+mod operators;
 
 fn exec(ast: Vec<Box<dyn ExecutableInstruction>>) {
     for instruction in ast {
