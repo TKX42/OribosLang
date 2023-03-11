@@ -11,6 +11,7 @@ pub mod answer;
 pub mod assignment;
 pub mod get;
 pub mod if_instr;
+pub mod for_loop;
 
 dyn_clone::clone_trait_object!(ExecutableInstruction);
 pub trait ExecutableInstruction: DynClone + Debug {

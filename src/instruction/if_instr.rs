@@ -21,7 +21,7 @@ impl IfInstruction {
 
 impl ExecutableInstruction for IfInstruction {
     fn name(&self) -> String {
-        String::from("assign")
+        String::from("if")
     }
 
     // use new()!

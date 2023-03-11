@@ -65,3 +65,10 @@ pub fn evaluate(expression: &Expression, interpreter: &mut Interpreter) -> Data 
         Expression::OperationExpression(opexpr) => { opexpr.evaluate(interpreter) }
     }
 }
+
+pub fn get_number(data: Data) -> f64 {
+    match data {
+        Data::Number(n) => { n }
+        _ => { panic!("Error: Could not parse number of data {:?}", data) }
+    }
+}

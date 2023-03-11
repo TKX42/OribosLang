@@ -9,6 +9,7 @@ use crate::expression::{Data, DataExpression, Expression, OperationExpression};
 use crate::instruction::answer::AnswerInstruction;
 use crate::instruction::assignment::AssignmentInstruction;
 use crate::instruction::ExecutableInstruction;
+use crate::instruction::for_loop::ForLoopInstruction;
 use crate::instruction::get::GetInstruction;
 use crate::instruction::if_instr::IfInstruction;
 use crate::instruction::print::PrintInstruction;
@@ -184,12 +185,32 @@ fn parse_if_expr(if_expr: Pair<Rule>, identifier_table: &mut IdentifierTable) ->
     IfInstruction::new(comparison, true_statements, else_statements)
 }
 
+fn parse_for_loop(for_loop: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
+    let mut counter_var_id = -1;
+    let mut start_i = Expression::DataExpression(DataExpression::empty());
+    let mut end_i = Expression::DataExpression(DataExpression::empty());
+    let mut statements = vec![];
+
+    for field in for_loop.into_inner() {
+        match field.as_rule() {
+            Rule::variable => { counter_var_id = get_var_id(field.as_str().to_string(), identifier_table) }
+            Rule::start_i => { start_i = parse_expression(field.into_inner().next().expect("Error: No start i in for loop"), identifier_table) }
+            Rule::end_i => { end_i = parse_expression(field.into_inner().next().expect("Error: No end i in for loop"), identifier_table) }
+            Rule::statements => { statements = parse_statements(identifier_table, field) }
+            _ => unreachable!()
+        }
+    }
+
+    ForLoopInstruction::new(counter_var_id, start_i, end_i, statements)
+}
+
 fn parse_statement(statement: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
     for statement_type in statement.into_inner() {
         match statement_type.as_rule() {
             Rule::instr => { return parse_instr(statement_type, identifier_table); }
             Rule::assignment => { return parse_assignment(statement_type, identifier_table); }
             Rule::if_expr => { return parse_if_expr(statement_type, identifier_table); }
+            Rule::for_expr => { return parse_for_loop(statement_type, identifier_table); }
             _ => unreachable!()
         };
     }

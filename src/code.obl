@@ -1,6 +1,5 @@
-x = 42;
-if(x==42){
-    if(x==42){
-        print(x);
+for(i,0,answer()){
+    if((i%2)==0){
+        print(i);
     };
 };
