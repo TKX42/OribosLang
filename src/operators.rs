@@ -1,15 +1,16 @@
+use std::fmt::Debug;
 use dyn_clone::DynClone;
 
 use crate::expression::{Data, evaluate, Expression};
 
 dyn_clone::clone_trait_object!(Operator);
-pub trait Operator: DynClone {
+pub trait Operator: DynClone + Debug {
     fn new() -> Box<dyn Operator> where Self: Sized;
     fn evaluate(&self, left: &Expression, right: &Expression) -> Data;
 }
 
 // region "Add"
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Add {}
 
 impl Operator for Add {
@@ -39,7 +40,7 @@ impl Operator for Add {
 // endregion
 
 // region "Sub"
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Sub {}
 
 impl Operator for Sub {
@@ -69,7 +70,7 @@ impl Operator for Sub {
 // endregion
 
 // region "Mul"
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Mul {}
 
 impl Operator for Mul {
@@ -99,7 +100,7 @@ impl Operator for Mul {
 // endregion
 
 // region "Div"
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Div {}
 
 impl Operator for Div {

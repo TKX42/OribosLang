@@ -7,14 +7,14 @@ pub enum Data {
     Number(f64),
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Expression {
     DataExpression(DataExpression),
     ExecutableInstruction(Box<dyn ExecutableInstruction>),
     OperationExpression(Box<OperationExpression>),
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct DataExpression {
     data: Data,
 }
@@ -35,7 +35,7 @@ impl DataExpression {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct OperationExpression {
     operator: Box<dyn Operator>,
     left: Expression,
