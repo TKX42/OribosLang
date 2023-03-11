@@ -3,7 +3,7 @@ use crate::instruction::ExecutableInstruction;
 
 #[derive(Clone, Debug)]
 pub struct PrintInstruction {
-    data: Data,
+    data: Expression,
 }
 
 impl ExecutableInstruction for PrintInstruction {
@@ -13,12 +13,12 @@ impl ExecutableInstruction for PrintInstruction {
 
     fn init(parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
         Box::new(PrintInstruction {
-            data: evaluate(parameters.get(0).expect("Invalid parameter for Print")),
+            data: parameters.get(0).expect("Invalid parameter for Print").clone(),
         })
     }
 
     fn exec(&self) -> Expression {
-        print(&self.data);
+        print(&evaluate(&self.data));
         Expression::DataExpression(DataExpression::empty())
     }
 }
