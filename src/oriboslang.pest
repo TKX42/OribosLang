@@ -1,6 +1,6 @@
 code = { SOI ~ (statement | CRLF)* ~ EOI }
 
-statement = { (instr | assignment) ~ semicolon }
+statement = { (if_expr | instr | assignment) ~ semicolon }
 
 instr_name     = { word }
 instr          = { instr_name ~ open_bracket ~ parameter_list ~ closing_bracket }
@@ -12,9 +12,14 @@ assignment =  { variable ~ " "* ~ assign ~ " "* ~ expression }
 assign     = _{ "=" }
 variable   =  { alpha+ }
 
+if_expr = {
+    "if" ~ open_bracket ~ comparison ~ closing_bracket ~ opening_block ~ statements ~ closing_block
+}
+statements = {(" "* ~ statement | CRLF)*}
+
 primitive = { string | number | bool }
 
-string = { "\"" ~ char* ~ "\"" }
+string = { "\"" ~ (char|" ")* ~ "\"" }
 number = { digit+ }
 bool   = { true | false }
 true   = { "true" }
@@ -37,6 +42,8 @@ equals     = { "==" }
 semicolon       = _{ ";" }
 open_bracket    = _{ "(" }
 closing_bracket = _{ ")" }
+opening_block   = _{ "{" }
+closing_block   = _{ "}" }
 
 word  =  { char+ }
 char  = _{ digit | alpha }

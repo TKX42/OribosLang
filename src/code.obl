@@ -1,1 +1,6 @@
-print("hi");
+if(42==42){
+    print("yay");
+};
+if(42==84){
+    print("oh no");
+};

@@ -10,6 +10,7 @@ use crate::instruction::answer::AnswerInstruction;
 use crate::instruction::assignment::AssignmentInstruction;
 use crate::instruction::ExecutableInstruction;
 use crate::instruction::get::GetInstruction;
+use crate::instruction::if_instr::IfInstruction;
 use crate::instruction::print::PrintInstruction;
 use crate::instruction::time::TimeInstruction;
 use crate::operators::{Add, Div, Equals, Mul, Operator, Sub};
@@ -165,11 +166,26 @@ fn get_var_id(var_name: String, identifier_table: &mut IdentifierTable) -> i64 {
     };
 }
 
+fn parse_if_expr(if_expr: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
+    let mut comparison = Expression::DataExpression(DataExpression::empty());
+    let mut statements = vec![];
+    for field in if_expr.into_inner() {
+        match field.as_rule() {
+            Rule::comparison => { comparison = parse_operation(field, identifier_table) }
+            Rule::statements => { statements = parse_statements(identifier_table, field) }
+            _ => unreachable!()
+        }
+    }
+
+    IfInstruction::new(comparison, statements)
+}
+
 fn parse_statement(statement: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
     for statement_type in statement.into_inner() {
         match statement_type.as_rule() {
             Rule::instr => { return parse_instr(statement_type, identifier_table); }
             Rule::assignment => { return parse_assignment(statement_type, identifier_table); }
+            Rule::if_expr => { return parse_if_expr(statement_type, identifier_table); }
             _ => unreachable!()
         };
     }
