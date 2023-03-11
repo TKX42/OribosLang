@@ -1,7 +1,7 @@
 use crate::instruction::ExecutableInstruction;
 use crate::operators::Operator;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Data {
     String(String),
     Number(f64),

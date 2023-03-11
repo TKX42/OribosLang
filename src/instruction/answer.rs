@@ -1,21 +1,17 @@
 // JUST FOR DEBUGGING PURPOSE
 use crate::expression::{Data, DataExpression, Expression};
-use crate::instruction::{ExecutableInstruction, Instruction};
+use crate::instruction::ExecutableInstruction;
 
-#[derive(Clone)]
-pub struct AnswerInstruction {
-    instruction: Instruction,
-}
+#[derive(Clone, Debug)]
+pub struct AnswerInstruction {}
 
 impl ExecutableInstruction for AnswerInstruction {
-    fn name(&self) -> &String {
-        return &self.instruction.name;
+    fn name(&self) -> String {
+        return String::from("answer");
     }
 
     fn init(_parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
-        Box::new(AnswerInstruction {
-            instruction: Instruction::new("answer".to_string()),
-        })
+        Box::new(AnswerInstruction {})
     }
 
     fn exec(&self) -> Expression {

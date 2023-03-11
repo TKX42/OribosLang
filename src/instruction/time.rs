@@ -1,22 +1,18 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::expression::{Data, DataExpression, Expression};
-use crate::instruction::{ExecutableInstruction, Instruction};
+use crate::instruction::ExecutableInstruction;
 
-#[derive(Clone)]
-pub struct TimeInstruction {
-    instruction: Instruction,
-}
+#[derive(Clone, Debug)]
+pub struct TimeInstruction {}
 
 impl ExecutableInstruction for TimeInstruction {
-    fn name(&self) -> &String {
-        &self.instruction.name
+    fn name(&self) -> String {
+        String::from("time")
     }
 
     fn init(_parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
-        Box::new(TimeInstruction {
-            instruction: Instruction::new("time".to_string())
-        })
+        Box::new(TimeInstruction {})
     }
 
     fn exec(&self) -> Expression {

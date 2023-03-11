@@ -12,6 +12,7 @@ mod operators;
 
 fn exec(ast: Vec<Box<dyn ExecutableInstruction>>) {
     for instruction in ast {
+        println!("{:#?}", instruction);
         instruction.exec();
     }
 }
