@@ -1,4 +1,4 @@
-code = { ((statement) | CRLF)* }
+code = { SOI ~ (statement | CRLF)* ~ EOI }
 
 statement      = { (instr | assignment) ~ ";" }
 instr_name     = { word }

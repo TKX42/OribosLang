@@ -187,6 +187,7 @@ pub fn parse(code_str: &str) -> Vec<Box<dyn ExecutableInstruction>> {
             Rule::statement => {
                 ast.push(parse_statement(statement, &mut identifier_table));
             }
+            Rule::EOI => {}
             _ => unreachable!(),
         }
     }
