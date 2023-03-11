@@ -34,9 +34,9 @@ div = { "/" }
 comparison = { value ~ equals ~ value }
 equals     = { "==" }
 
-semicolon       = { ";" }
-open_bracket    = { "(" }
-closing_bracket = { ")" }
+semicolon       = _{ ";" }
+open_bracket    = _{ "(" }
+closing_bracket = _{ ")" }
 
 word  =  { char+ }
 char  = _{ digit | alpha }
