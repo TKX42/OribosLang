@@ -15,7 +15,7 @@ impl Memory {
         }
     }
 
-    pub fn add(&mut self, id: i64, val: Data) {
+    pub fn assign(&mut self, id: i64, val: Data) {
         self.mem.insert(id, val);
     }
 }

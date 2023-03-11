@@ -30,7 +30,7 @@ impl ExecutableInstruction for AssignmentInstruction {
     fn exec(&self, interpreter: &mut Interpreter) -> Expression {
         println!("ASSIGNMENT");
         let expr = evaluate(&self.var_expression, interpreter);
-        interpreter.memory().add(self.var_id, expr);
+        interpreter.memory().assign(self.var_id, expr);
         self.var_expression.clone()
     }
 }
