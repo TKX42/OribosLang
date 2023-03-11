@@ -178,19 +178,22 @@ fn parse_statement(statement: Pair<Rule>, identifier_table: &mut IdentifierTable
 }
 
 pub fn parse(code_str: &str) -> Vec<Box<dyn ExecutableInstruction>> {
-    let mut ast: Vec<Box<dyn ExecutableInstruction>> = vec![];
     let mut identifier_table = IdentifierTable { i: 0, identifier: Default::default() };
 
     let code = OribosParser::parse(Rule::code, code_str).unwrap_or_else(|e| panic!("{}", e)).next().expect("Error parsing");
-    for statement in code.into_inner() {
+    parse_statements(&mut identifier_table, code)
+}
+
+fn parse_statements(mut identifier_table: &mut IdentifierTable, statements: Pair<Rule>) -> Vec<Box<dyn ExecutableInstruction>> {
+    let mut result = vec![];
+    for statement in statements.into_inner() {
         match statement.as_rule() {
             Rule::statement => {
-                ast.push(parse_statement(statement, &mut identifier_table));
+                result.push(parse_statement(statement, &mut identifier_table));
             }
             Rule::EOI => {}
             _ => unreachable!(),
         }
     }
-
-    ast
+    result
 }
