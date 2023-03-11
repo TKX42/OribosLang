@@ -1,8 +1,9 @@
 code = { SOI ~ (statement | CRLF)* ~ EOI }
 
-statement      = { (instr | assignment) ~ ";" }
+statement = { (instr | assignment) ~ semicolon }
+
 instr_name     = { word }
-instr          = { instr_name ~ "(" ~ parameter_list ~ ")" }
+instr          = { instr_name ~ open_bracket ~ parameter_list ~ closing_bracket }
 parameter_list = { (parameter ~ ("," ~ " "+ ~ parameter)*)? }
 parameter      = { expression }
 expression     = { instr | operation | primitive | variable }
@@ -15,9 +16,9 @@ primitive = { string | number | bool }
 
 string = { "\"" ~ char* ~ "\"" }
 number = { digit+ }
-bool = { true | false }
-true = { "true" }
-false = { "false" }
+bool   = { true | false }
+true   = { "true" }
+false  = { "false" }
 
 operation = { comparison | sum }
 sum       = { product ~ ((add | sub) ~ product)* }
@@ -31,7 +32,11 @@ mul = { "*" }
 div = { "/" }
 
 comparison = { value ~ equals ~ value }
-equals = {"=="}
+equals     = { "==" }
+
+semicolon       = { ";" }
+open_bracket    = { "(" }
+closing_bracket = { ")" }
 
 word  =  { char+ }
 char  = _{ digit | alpha }
