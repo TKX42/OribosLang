@@ -15,7 +15,7 @@ impl ExecutableInstruction for AnswerInstruction {
         Box::new(AnswerInstruction {})
     }
 
-    fn exec(&self, interpreter: &mut Interpreter) -> Expression {
+    fn exec(&self, _interpreter: &mut Interpreter) -> Expression {
         Expression::DataExpression(DataExpression::new(Data::Number(42.0)))
     }
 }

@@ -64,11 +64,3 @@ pub fn evaluate(expression: &Expression, interpreter: &mut Interpreter) -> Data 
         Expression::OperationExpression(opexpr) => { opexpr.evaluate(interpreter) }
     }
 }
-
-// util
-pub fn get_string(data: Data) -> String {
-    match data {
-        Data::String(s) => { s }
-        _ => panic!("Error, could not get string value of {:?}", data)
-    }
-}

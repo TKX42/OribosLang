@@ -16,7 +16,7 @@ impl ExecutableInstruction for TimeInstruction {
         Box::new(TimeInstruction {})
     }
 
-    fn exec(&self, interpreter: &mut Interpreter) -> Expression {
+    fn exec(&self, _interpreter: &mut Interpreter) -> Expression {
         let start = SystemTime::now();
         let since_the_epoch = start.duration_since(UNIX_EPOCH).unwrap();
         Expression::DataExpression(DataExpression::new(Data::String(since_the_epoch.as_millis().to_string())))

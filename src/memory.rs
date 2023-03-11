@@ -1,7 +1,6 @@
 use std::collections::HashMap;
-use std::iter::Map;
 
-use crate::expression::{Data, Expression};
+use crate::expression::Data;
 
 #[derive(Debug)]
 pub struct Memory {
@@ -17,5 +16,9 @@ impl Memory {
 
     pub fn assign(&mut self, id: i64, val: Data) {
         self.mem.insert(id, val);
+    }
+
+    pub fn get(&self, id: i64) -> &Data {
+        self.mem.get(&id).expect(format!("Memory Error: Could not find variable {}", id).as_str())
     }
 }

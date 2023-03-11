@@ -2,7 +2,6 @@ extern crate pest;
 #[macro_use]
 extern crate pest_derive;
 
-use crate::instruction::ExecutableInstruction;
 use crate::interpreter::Interpreter;
 use crate::parser::parse;
 
@@ -11,16 +10,16 @@ mod instruction;
 mod parser;
 mod operators;
 mod interpreter;
-mod Memory;
+mod memory;
 
 fn demo_code() {
     println!("Executing demo code...");
     let demo_code = include_str!("code.obl");
     let ast = parse(demo_code);
-    println!("{:#?}", ast);
+    //println!("{:#?}", ast);
     let mut interpreter = Interpreter::new(ast);
     interpreter.run();
-    println!("{:#?}", interpreter);
+    //println!("{:#?}", interpreter);
 }
 
 fn main() {

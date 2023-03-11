@@ -9,6 +9,7 @@ use crate::expression::{Data, DataExpression, Expression, OperationExpression};
 use crate::instruction::answer::AnswerInstruction;
 use crate::instruction::assignment::AssignmentInstruction;
 use crate::instruction::ExecutableInstruction;
+use crate::instruction::get::GetInstruction;
 use crate::instruction::print::PrintInstruction;
 use crate::instruction::time::TimeInstruction;
 use crate::operators::{Add, Div, Mul, Operator, Sub};
@@ -42,18 +43,18 @@ fn parse_primitive(primitive: Pair<Rule>) -> Expression {
     panic!("Error: Could not parse primitive!");
 }
 
-fn parse_operation(operation: Pair<Rule>) -> Expression {
+fn parse_operation(operation: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Expression {
     let mut operations: Vec<Expression> = vec![];
     let mut operators: Vec<Box<dyn Operator>> = vec![];
 
     for operation_type in operation.into_inner() {
         match operation_type.as_rule() {
-            Rule::value => { operations.push(parse_value(operation_type)) }
+            Rule::value => { operations.push(parse_value(operation_type, identifier_table)) }
             Rule::add => { operators.push(Add::new()) }
             Rule::sub => { operators.push(Sub::new()) }
             Rule::mul => { operators.push(Mul::new()) }
             Rule::div => { operators.push(Div::new()) }
-            _ => { operations.push(parse_operation(operation_type)) }       // operation needs to be further resolved
+            _ => { operations.push(parse_operation(operation_type, identifier_table)) }       // operation needs to be further resolved
         }
     }
 
@@ -71,16 +72,17 @@ fn parse_operations(operations: Vec<Expression>, operators: Vec<Box<dyn Operator
     }
 }
 
-fn parse_value(value: Pair<Rule>) -> Expression {
-    return parse_expression(value);     // workaround because of parser not allowing left-recursion
+fn parse_value(value: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Expression {
+    return parse_expression(value, identifier_table);     // workaround because of parser not allowing left-recursion
 }
 
-fn parse_expression(expression: Pair<Rule>) -> Expression {
+fn parse_expression(expression: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Expression {
     for expression_type in expression.into_inner() {
         match expression_type.as_rule() {
             Rule::primitive => { return parse_primitive(expression_type); }
-            Rule::instr => { return Expression::ExecutableInstruction(parse_instr(expression_type)); }
-            Rule::operation => { return parse_operation(expression_type); }
+            Rule::instr => { return Expression::ExecutableInstruction(parse_instr(expression_type, identifier_table)); }
+            Rule::operation => { return parse_operation(expression_type, identifier_table); }
+            Rule::variable => { return Expression::ExecutableInstruction(parse_variable_get(expression_type, identifier_table)); }       // print(x) -> "x" will be converted into print(get(x))
             _ => unreachable!()
         }
     }
@@ -88,13 +90,18 @@ fn parse_expression(expression: Pair<Rule>) -> Expression {
     Expression::DataExpression(DataExpression::empty())
 }
 
-fn parse_instr_parameters(parameters: Pair<Rule>) -> Vec<Expression> {
+fn parse_variable_get(variable: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
+    let var_id = get_var_id(variable.as_str().to_string(), identifier_table);
+    GetInstruction::new(var_id)
+}
+
+fn parse_instr_parameters(parameters: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Vec<Expression> {
     let mut result: Vec<Expression> = vec![];
 
     for parameter in parameters.into_inner() {
         for expression in parameter.into_inner() {
             match expression.as_rule() {
-                Rule::expression => { result.push(parse_expression(expression)) }
+                Rule::expression => { result.push(parse_expression(expression, identifier_table)) }
                 _ => unreachable!()
             }
         }
@@ -103,13 +110,13 @@ fn parse_instr_parameters(parameters: Pair<Rule>) -> Vec<Expression> {
     result
 }
 
-fn parse_instr(instr: Pair<Rule>) -> Box<dyn ExecutableInstruction> {
+fn parse_instr(instr: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
     let mut instr_name = String::new();
     let mut instr_parameters = vec![];
     for field in instr.into_inner() {
         match field.as_rule() {
             Rule::instr_name => { instr_name = field.as_str().parse().unwrap() }
-            Rule::parameter_list => { instr_parameters = parse_instr_parameters(field) }
+            Rule::parameter_list => { instr_parameters = parse_instr_parameters(field, identifier_table) }
             _ => unreachable!()
         }
     }
@@ -133,7 +140,7 @@ fn parse_assignment(assignment: Pair<Rule>, identifier_table: &mut IdentifierTab
     for assignment_field in assignment.into_inner() {
         match assignment_field.as_rule() {
             Rule::variable => { var_name = assignment_field.as_str().to_string() }
-            Rule::expression => { var_expression = parse_expression(assignment_field) }
+            Rule::expression => { var_expression = parse_expression(assignment_field, identifier_table) }
             _ => unreachable!()
         }
     }
@@ -155,7 +162,7 @@ fn get_var_id(var_name: String, identifier_table: &mut IdentifierTable) -> i64 {
 fn parse_statement(statement: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
     for statement_type in statement.into_inner() {
         match statement_type.as_rule() {
-            Rule::instr => { return parse_instr(statement_type); }
+            Rule::instr => { return parse_instr(statement_type, identifier_table); }
             Rule::assignment => { return parse_assignment(statement_type, identifier_table); }
             _ => unreachable!()
         };

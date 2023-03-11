@@ -1,4 +1,4 @@
-use crate::expression::{Data, DataExpression, evaluate, Expression, get_string};
+use crate::expression::{evaluate, Expression};
 use crate::instruction::ExecutableInstruction;
 use crate::interpreter::Interpreter;
 
@@ -19,7 +19,7 @@ impl AssignmentInstruction {
 
 impl ExecutableInstruction for AssignmentInstruction {
     fn name(&self) -> String {
-        String::from("print")
+        String::from("assign")
     }
 
     // use new()!
@@ -28,7 +28,6 @@ impl ExecutableInstruction for AssignmentInstruction {
     }
 
     fn exec(&self, interpreter: &mut Interpreter) -> Expression {
-        println!("ASSIGNMENT");
         let expr = evaluate(&self.var_expression, interpreter);
         interpreter.memory().assign(self.var_id, expr);
         self.var_expression.clone()

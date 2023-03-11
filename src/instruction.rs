@@ -9,6 +9,7 @@ pub mod print;
 pub mod time;
 pub mod answer;
 pub mod assignment;
+pub mod get;
 
 dyn_clone::clone_trait_object!(ExecutableInstruction);
 pub trait ExecutableInstruction: DynClone + Debug {

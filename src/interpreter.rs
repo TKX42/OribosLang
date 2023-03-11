@@ -1,5 +1,5 @@
 use crate::instruction::ExecutableInstruction;
-use crate::Memory::Memory;
+use crate::memory::Memory;
 
 #[derive(Debug)]
 pub struct Interpreter {
