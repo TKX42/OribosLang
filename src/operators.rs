@@ -7,7 +7,7 @@ use crate::interpreter::Interpreter;
 
 dyn_clone::clone_trait_object!(Operator);
 pub trait Operator: DynClone + Debug {
-    fn new() -> Box<dyn Operator> where Self: Sized;
+    fn create() -> Box<dyn Operator> where Self: Sized;
     fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data;
 }
 
@@ -16,7 +16,7 @@ pub trait Operator: DynClone + Debug {
 pub struct Add {}
 
 impl Operator for Add {
-    fn new() -> Box<dyn Operator> where Self: Sized {
+    fn create() -> Box<dyn Operator> where Self: Sized {
         Box::new(Add {})
     }
 
@@ -35,7 +35,7 @@ impl Operator for Add {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot add type 'number' and 'string'") }
                     Data::Bool(_) => { panic!("Error: Cannot add type 'number' and 'bool'") }
-                    Data::Number(rn) => { return Data::Number(ln + rn); }
+                    Data::Number(rn) => { Data::Number(ln + rn) }
                 }
             }
             Data::Bool(_) => {
@@ -51,7 +51,7 @@ impl Operator for Add {
 pub struct Sub {}
 
 impl Operator for Sub {
-    fn new() -> Box<dyn Operator> where Self: Sized {
+    fn create() -> Box<dyn Operator> where Self: Sized {
         Box::new(Sub {})
     }
 
@@ -70,7 +70,7 @@ impl Operator for Sub {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot sub type 'number' and 'string'") }
                     Data::Bool(_) => { panic!("Error: Cannot sub type 'number' and 'bool'") }
-                    Data::Number(rn) => { return Data::Number(ln - rn); }
+                    Data::Number(rn) => { Data::Number(ln - rn) }
                 }
             }
             Data::Bool(_) => {
@@ -86,7 +86,7 @@ impl Operator for Sub {
 pub struct Mul {}
 
 impl Operator for Mul {
-    fn new() -> Box<dyn Operator> where Self: Sized {
+    fn create() -> Box<dyn Operator> where Self: Sized {
         Box::new(Mul {})
     }
 
@@ -105,7 +105,7 @@ impl Operator for Mul {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot mul type 'number' and 'string'") }
                     Data::Bool(_) => { panic!("Error: Cannot mul type 'number' and 'bool'") }
-                    Data::Number(rn) => { return Data::Number(ln * rn); }
+                    Data::Number(rn) => { Data::Number(ln * rn) }
                 }
             }
             Data::Bool(_) => {
@@ -121,7 +121,7 @@ impl Operator for Mul {
 pub struct Div {}
 
 impl Operator for Div {
-    fn new() -> Box<dyn Operator> where Self: Sized {
+    fn create() -> Box<dyn Operator> where Self: Sized {
         Box::new(Div {})
     }
 
@@ -140,7 +140,7 @@ impl Operator for Div {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot div type 'number' and 'string'") }
                     Data::Bool(_) => { panic!("Error: Cannot div type 'number' and 'bool'") }
-                    Data::Number(rn) => { return Data::Number(ln / rn); }
+                    Data::Number(rn) => { Data::Number(ln / rn) }
                 }
             }
             Data::Bool(_) => {
@@ -156,7 +156,7 @@ impl Operator for Div {
 pub struct Equals {}
 
 impl Operator for Equals {
-    fn new() -> Box<dyn Operator> where Self: Sized {
+    fn create() -> Box<dyn Operator> where Self: Sized {
         Box::new(Equals {})
     }
 
@@ -166,7 +166,7 @@ impl Operator for Equals {
         match left_val {
             Data::String(ls) => {
                 match right_val {
-                    Data::String(rs) => { return Data::Bool(ls == rs); }
+                    Data::String(rs) => { Data::Bool(ls == rs) }
                     Data::Number(_) => { panic!("Error: Cannot equals type 'string' and 'number'") }
                     Data::Bool(_) => { panic!("Error: Cannot equals type 'string' and 'bool'") }
                 }
@@ -175,14 +175,14 @@ impl Operator for Equals {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot equals type 'number' and 'string'") }
                     Data::Bool(_) => { panic!("Error: Cannot equals type 'number' and 'bool'") }
-                    Data::Number(rn) => { return Data::Bool(ln == rn); }
+                    Data::Number(rn) => { Data::Bool(ln == rn) }
                 }
             }
             Data::Bool(lb) => {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot equals type 'bool' and 'string'") }
                     Data::Number(_) => { panic!("Error: Cannot equals type 'bool' and 'number'") }
-                    Data::Bool(rb) => { return Data::Bool(lb == rb); }
+                    Data::Bool(rb) => { Data::Bool(lb == rb) }
                 }
             }
         }
@@ -195,7 +195,7 @@ impl Operator for Equals {
 pub struct Modulo {}
 
 impl Operator for Modulo {
-    fn new() -> Box<dyn Operator> where Self: Sized {
+    fn create() -> Box<dyn Operator> where Self: Sized {
         Box::new(Modulo {})
     }
 
@@ -210,7 +210,7 @@ impl Operator for Modulo {
                 match right_val {
                     Data::String(_) => { panic!("Error: Cannot mod type 'number' and 'string'") }
                     Data::Bool(_) => { panic!("Error: Cannot mod type 'number' and 'bool'") }
-                    Data::Number(rn) => { return Data::Number(ln % rn); }
+                    Data::Number(rn) => { Data::Number(ln % rn) }
                 }
             }
             Data::Bool(_) => {

@@ -10,7 +10,7 @@ pub struct IfInstruction {
 }
 
 impl IfInstruction {
-    pub fn new(comparison: Expression, true_statements: Vec<Box<dyn ExecutableInstruction>>, else_statements: Vec<Box<dyn ExecutableInstruction>>) -> Box<dyn ExecutableInstruction> {
+    pub fn create(comparison: Expression, true_statements: Vec<Box<dyn ExecutableInstruction>>, else_statements: Vec<Box<dyn ExecutableInstruction>>) -> Box<dyn ExecutableInstruction> {
         Box::new(IfInstruction {
             comparison,
             true_statements,
@@ -24,8 +24,8 @@ impl ExecutableInstruction for IfInstruction {
         String::from("if")
     }
 
-    // use new()!
-    fn init(_parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
+    // use create()!
+    fn init(_parameters: &[Expression]) -> Box<dyn ExecutableInstruction> {
         unreachable!()
     }
 
@@ -43,6 +43,6 @@ impl ExecutableInstruction for IfInstruction {
             }
         }
 
-        Expression::DataExpression(DataExpression::empty())
+        Expression::Data(DataExpression::empty())
     }
 }

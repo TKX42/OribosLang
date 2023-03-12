@@ -8,14 +8,14 @@ pub struct AnswerInstruction {}
 
 impl ExecutableInstruction for AnswerInstruction {
     fn name(&self) -> String {
-        return String::from("answer");
+        String::from("answer")
     }
 
-    fn init(_parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
+    fn init(_parameters: &[Expression]) -> Box<dyn ExecutableInstruction> {
         Box::new(AnswerInstruction {})
     }
 
     fn exec(&self, _interpreter: &mut Interpreter) -> Expression {
-        Expression::DataExpression(DataExpression::new(Data::Number(42.0)))
+        Expression::Data(DataExpression::new(Data::Number(42.0)))
     }
 }

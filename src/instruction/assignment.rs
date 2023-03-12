@@ -10,9 +10,9 @@ pub struct AssignmentInstruction {
 }
 
 impl AssignmentInstruction {
-    pub fn new(var_id: i64, var_expression: Expression) -> Box<dyn ExecutableInstruction> {
+    pub fn create(var_id: i64, var_expression: Expression) -> Box<dyn ExecutableInstruction> {
         Box::new(AssignmentInstruction {
-            var_id: var_id,
+            var_id,
             var_expression,
         })
     }
@@ -23,8 +23,8 @@ impl ExecutableInstruction for AssignmentInstruction {
         String::from("assign")
     }
 
-    // use new()!
-    fn init(_parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
+    // use create()!
+    fn init(_parameters: &[Expression]) -> Box<dyn ExecutableInstruction> {
         unreachable!()
     }
 
@@ -32,6 +32,6 @@ impl ExecutableInstruction for AssignmentInstruction {
         let expr = evaluate(&self.var_expression, interpreter);
         interpreter.memory().assign(self.var_id, expr);
         //self.var_expression.clone()     // TODO evaluate performance
-        Expression::DataExpression(DataExpression::empty())
+        Expression::Data(DataExpression::empty())
     }
 }

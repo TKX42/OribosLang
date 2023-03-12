@@ -11,7 +11,7 @@ pub struct ForLoopInstruction {
 }
 
 impl ForLoopInstruction {
-    pub fn new(counter_var_id: i64, start_i: Expression, end_i: Expression, statements: Vec<Box<dyn ExecutableInstruction>>) -> Box<dyn ExecutableInstruction> {
+    pub fn create(counter_var_id: i64, start_i: Expression, end_i: Expression, statements: Vec<Box<dyn ExecutableInstruction>>) -> Box<dyn ExecutableInstruction> {
         Box::new(ForLoopInstruction {
             counter_var_id,
             start_i,
@@ -26,8 +26,8 @@ impl ExecutableInstruction for ForLoopInstruction {
         String::from("for")
     }
 
-    // use new()!
-    fn init(_parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
+    // use create()!
+    fn init(_parameters: &[Expression]) -> Box<dyn ExecutableInstruction> {
         unreachable!()
     }
 
@@ -40,6 +40,6 @@ impl ExecutableInstruction for ForLoopInstruction {
             interpreter.run_statements(&self.statements);
         }
 
-        Expression::DataExpression(DataExpression::empty())
+        Expression::Data(DataExpression::empty())
     }
 }

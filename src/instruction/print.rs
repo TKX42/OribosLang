@@ -12,7 +12,7 @@ impl ExecutableInstruction for PrintInstruction {
         String::from("print")
     }
 
-    fn init(parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
+    fn init(parameters: &[Expression]) -> Box<dyn ExecutableInstruction> {
         Box::new(PrintInstruction {
             data: parameters.get(0).expect("Invalid parameter for Print").clone(),
         })
@@ -20,7 +20,7 @@ impl ExecutableInstruction for PrintInstruction {
 
     fn exec(&self, interpreter: &mut Interpreter) -> Expression {
         print(&evaluate(&self.data, interpreter));
-        Expression::DataExpression(DataExpression::empty())
+        Expression::Data(DataExpression::empty())
     }
 }
 

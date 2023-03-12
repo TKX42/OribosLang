@@ -40,9 +40,9 @@ fn get_bool(s: &str) -> Data {
 fn parse_primitive(primitive: Pair<Rule>) -> Expression {
     for primitive_type in primitive.into_inner() {
         match primitive_type.as_rule() {
-            Rule::string => { return Expression::DataExpression(DataExpression::new(get_string(primitive_type.as_str()))); }
-            Rule::number => { return Expression::DataExpression(DataExpression::new(get_number(primitive_type.as_str()))); }
-            Rule::bool => { return Expression::DataExpression(DataExpression::new(get_bool(primitive_type.as_str()))); }
+            Rule::string => { return Expression::Data(DataExpression::new(get_string(primitive_type.as_str()))); }
+            Rule::number => { return Expression::Data(DataExpression::new(get_number(primitive_type.as_str()))); }
+            Rule::bool => { return Expression::Data(DataExpression::new(get_bool(primitive_type.as_str()))); }
             _ => unreachable!()
         };
     }
@@ -57,12 +57,12 @@ fn parse_operation(operation: Pair<Rule>, identifier_table: &mut IdentifierTable
     for operation_type in operation.into_inner() {
         match operation_type.as_rule() {
             Rule::value => { operations.push(parse_value(operation_type, identifier_table)) }
-            Rule::add => { operators.push(Add::new()) }
-            Rule::sub => { operators.push(Sub::new()) }
-            Rule::mul => { operators.push(Mul::new()) }
-            Rule::div => { operators.push(Div::new()) }
-            Rule::modulo => { operators.push(Modulo::new()) }
-            Rule::equals => { operators.push(Equals::new()) }
+            Rule::add => { operators.push(Add::create()) }
+            Rule::sub => { operators.push(Sub::create()) }
+            Rule::mul => { operators.push(Mul::create()) }
+            Rule::div => { operators.push(Div::create()) }
+            Rule::modulo => { operators.push(Modulo::create()) }
+            Rule::equals => { operators.push(Equals::create()) }
             _ => { operations.push(parse_operation(operation_type, identifier_table)) }       // operation needs to be further resolved
         }
     }
@@ -75,14 +75,14 @@ fn parse_operations(operations: Vec<Expression>, operators: Vec<Box<dyn Operator
         return operations.deref().get(0).cloned().unwrap();
     } else {
         let left_operation = parse_operations(operations.get(0..operations.len() - 1).unwrap().to_vec(), operators.get(0..operators.len() - 1).unwrap().to_vec());
-        let right_operation = operations.get(operations.len() - 1).cloned().unwrap();
-        let operator = operators.get(operators.len() - 1).cloned().unwrap();
-        return Expression::OperationExpression(Box::new(OperationExpression::new(left_operation, right_operation, operator)));
+        let right_operation = operations.last().cloned().unwrap();
+        let operator = operators.last().cloned().unwrap();
+        Expression::Operation(Box::new(OperationExpression::new(left_operation, right_operation, operator)))
     }
 }
 
 fn parse_value(value: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Expression {
-    return parse_expression(value, identifier_table);     // workaround because of parser not allowing left-recursion
+    parse_expression(value, identifier_table)     // workaround because of parser not allowing left-recursion
 }
 
 fn parse_expression(expression: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Expression {
@@ -96,12 +96,12 @@ fn parse_expression(expression: Pair<Rule>, identifier_table: &mut IdentifierTab
         }
     }
 
-    Expression::DataExpression(DataExpression::empty())
+    Expression::Data(DataExpression::empty())
 }
 
 fn parse_variable_get(variable: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
     let var_id = get_var_id(variable.as_str().to_string(), identifier_table);
-    GetInstruction::new(var_id)
+    GetInstruction::create(var_id)
 }
 
 fn parse_instr_parameters(parameters: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Vec<Expression> {
@@ -144,7 +144,7 @@ fn create_instruction(instr_name: String, instr_parameters: Vec<Expression>) -> 
 
 fn parse_assignment(assignment: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
     let mut var_name = String::new();
-    let mut var_expression = Expression::DataExpression(DataExpression::empty());
+    let mut var_expression = Expression::Data(DataExpression::empty());
 
     for assignment_field in assignment.into_inner() {
         match assignment_field.as_rule() {
@@ -154,7 +154,7 @@ fn parse_assignment(assignment: Pair<Rule>, identifier_table: &mut IdentifierTab
         }
     }
 
-    AssignmentInstruction::new(get_var_id(var_name, identifier_table), var_expression)
+    AssignmentInstruction::create(get_var_id(var_name, identifier_table), var_expression)
 }
 
 fn get_var_id(var_name: String, identifier_table: &mut IdentifierTable) -> i64 {
@@ -169,7 +169,7 @@ fn get_var_id(var_name: String, identifier_table: &mut IdentifierTable) -> i64 {
 }
 
 fn parse_if_expr(if_expr: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
-    let mut comparison = Expression::DataExpression(DataExpression::empty());
+    let mut comparison = Expression::Data(DataExpression::empty());
     let mut true_statements = vec![];
     let mut else_statements = vec![];
 
@@ -182,13 +182,13 @@ fn parse_if_expr(if_expr: Pair<Rule>, identifier_table: &mut IdentifierTable) ->
         }
     }
 
-    IfInstruction::new(comparison, true_statements, else_statements)
+    IfInstruction::create(comparison, true_statements, else_statements)
 }
 
 fn parse_for_loop(for_loop: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
     let mut counter_var_id = -1;
-    let mut start_i = Expression::DataExpression(DataExpression::empty());
-    let mut end_i = Expression::DataExpression(DataExpression::empty());
+    let mut start_i = Expression::Data(DataExpression::empty());
+    let mut end_i = Expression::Data(DataExpression::empty());
     let mut statements = vec![];
 
     for field in for_loop.into_inner() {
@@ -201,7 +201,7 @@ fn parse_for_loop(for_loop: Pair<Rule>, identifier_table: &mut IdentifierTable) 
         }
     }
 
-    ForLoopInstruction::new(counter_var_id, start_i, end_i, statements)
+    ForLoopInstruction::create(counter_var_id, start_i, end_i, statements)
 }
 
 fn parse_statement(statement: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
@@ -225,12 +225,12 @@ pub fn parse(code_str: &str) -> Vec<Box<dyn ExecutableInstruction>> {
     parse_statements(&mut identifier_table, code)
 }
 
-fn parse_statements(mut identifier_table: &mut IdentifierTable, statements: Pair<Rule>) -> Vec<Box<dyn ExecutableInstruction>> {
+fn parse_statements(identifier_table: &mut IdentifierTable, statements: Pair<Rule>) -> Vec<Box<dyn ExecutableInstruction>> {
     let mut result = vec![];
     for statement in statements.into_inner() {
         match statement.as_rule() {
             Rule::statement => {
-                result.push(parse_statement(statement, &mut identifier_table));
+                result.push(parse_statement(statement, identifier_table));
             }
             Rule::EOI => {}
             _ => unreachable!(),

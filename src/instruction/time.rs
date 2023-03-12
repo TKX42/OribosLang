@@ -12,13 +12,13 @@ impl ExecutableInstruction for TimeInstruction {
         String::from("time")
     }
 
-    fn init(_parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
+    fn init(_parameters: &[Expression]) -> Box<dyn ExecutableInstruction> {
         Box::new(TimeInstruction {})
     }
 
     fn exec(&self, _interpreter: &mut Interpreter) -> Expression {
         let start = SystemTime::now();
         let since_the_epoch = start.duration_since(UNIX_EPOCH).unwrap();
-        Expression::DataExpression(DataExpression::new(Data::String(since_the_epoch.as_millis().to_string())))
+        Expression::Data(DataExpression::new(Data::String(since_the_epoch.as_millis().to_string())))
     }
 }

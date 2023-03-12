@@ -11,9 +11,9 @@ pub enum Data {
 
 #[derive(Clone, Debug)]
 pub enum Expression {
-    DataExpression(DataExpression),
+    Data(DataExpression),
     ExecutableInstruction(Box<dyn ExecutableInstruction>),
-    OperationExpression(Box<OperationExpression>),
+    Operation(Box<OperationExpression>),
 }
 
 #[derive(Clone, Debug)]
@@ -60,9 +60,9 @@ impl OperationExpression {
 
 pub fn evaluate(expression: &Expression, interpreter: &mut Interpreter) -> Data {
     match expression {
-        Expression::DataExpression(dexpr) => { dexpr.evaluate() }
+        Expression::Data(dexpr) => { dexpr.evaluate() }
         Expression::ExecutableInstruction(instr) => { evaluate(&instr.exec(interpreter), interpreter) }
-        Expression::OperationExpression(opexpr) => { opexpr.evaluate(interpreter) }
+        Expression::Operation(opexpr) => { opexpr.evaluate(interpreter) }
     }
 }
 

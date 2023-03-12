@@ -16,6 +16,6 @@ pub mod for_loop;
 dyn_clone::clone_trait_object!(ExecutableInstruction);
 pub trait ExecutableInstruction: DynClone + Debug {
     fn name(&self) -> String;
-    fn init(parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> where Self: Sized;
+    fn init(parameters: &[Expression]) -> Box<dyn ExecutableInstruction> where Self: Sized;
     fn exec(&self, interpreter: &mut Interpreter) -> Expression;
 }

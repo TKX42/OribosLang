@@ -8,9 +8,9 @@ pub struct GetInstruction {
 }
 
 impl GetInstruction {
-    pub fn new(var_id: i64) -> Box<dyn ExecutableInstruction> {
+    pub fn create(var_id: i64) -> Box<dyn ExecutableInstruction> {
         Box::new(GetInstruction {
-            var_id: var_id,
+            var_id,
         })
     }
 }
@@ -20,12 +20,12 @@ impl ExecutableInstruction for GetInstruction {
         String::from("get")
     }
 
-    // use new()!
-    fn init(_parameters: &Vec<Expression>) -> Box<dyn ExecutableInstruction> {
+    // use create()!
+    fn init(_parameters: &[Expression]) -> Box<dyn ExecutableInstruction> {
         unreachable!()
     }
 
     fn exec(&self, interpreter: &mut Interpreter) -> Expression {
-        Expression::DataExpression(DataExpression::new(interpreter.memory().get(self.var_id).clone()))      // !!! TODO: evaluate clone for runtime performance
+        Expression::Data(DataExpression::new(interpreter.memory().get(self.var_id).clone()))      // !!! TODO: evaluate clone for runtime performance
     }
 }

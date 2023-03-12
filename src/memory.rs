@@ -24,3 +24,9 @@ impl Memory {
         self.mem.get((id - 1) as usize).unwrap()
     }
 }
+
+impl Default for Memory {
+    fn default() -> Self {
+        Self::new()
+    }
+}
