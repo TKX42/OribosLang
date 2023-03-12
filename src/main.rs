@@ -1,3 +1,6 @@
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 extern crate pest;
 #[macro_use]
 extern crate pest_derive;
