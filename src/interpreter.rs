@@ -21,6 +21,12 @@ impl Interpreter {
         }
     }
 
+    pub fn run_statements(&mut self, statements: &Vec<Box<dyn ExecutableInstruction>>) {
+        for instr in statements {
+            instr.exec(self);
+        }
+    }
+
     pub fn memory(&mut self) -> &mut Memory {
         &mut self.memory
     }

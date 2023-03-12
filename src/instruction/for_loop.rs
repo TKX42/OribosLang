@@ -37,10 +37,7 @@ impl ExecutableInstruction for ForLoopInstruction {
 
         for i in start..end {
             interpreter.memory().assign(self.counter_var_id, Data::Number(i as f64));
-
-            for instr in &self.statements {
-                instr.exec(interpreter);
-            }
+            interpreter.run_statements(&self.statements);
         }
 
         Expression::DataExpression(DataExpression::empty())

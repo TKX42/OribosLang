@@ -1,4 +1,5 @@
 use crate::expression::{evaluate, Expression};
+use crate::expression::DataExpression;
 use crate::instruction::ExecutableInstruction;
 use crate::interpreter::Interpreter;
 
@@ -30,6 +31,7 @@ impl ExecutableInstruction for AssignmentInstruction {
     fn exec(&self, interpreter: &mut Interpreter) -> Expression {
         let expr = evaluate(&self.var_expression, interpreter);
         interpreter.memory().assign(self.var_id, expr);
-        self.var_expression.clone()     // TODO evaluate performance
+        //self.var_expression.clone()     // TODO evaluate performance
+        Expression::DataExpression(DataExpression::empty())
     }
 }

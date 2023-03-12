@@ -36,13 +36,9 @@ impl ExecutableInstruction for IfInstruction {
             Data::Number(_) => { panic!("Error: Invalid type 'number' given as expression for if instruction") }
             Data::Bool(b) => {
                 if b {
-                    for instr in &self.true_statements {
-                        instr.exec(interpreter);
-                    }
+                    interpreter.run_statements(&self.true_statements);
                 } else {
-                    for instr in &self.else_statements {
-                        instr.exec(interpreter);
-                    }
+                    interpreter.run_statements(&self.else_statements);
                 }
             }
         }
