@@ -21,7 +21,7 @@ impl Memory {
     }
 
     pub fn get(&self, id: i64) -> &Data {
-        self.mem.get((id - 1) as usize).unwrap()
+        self.mem.get((id - 1) as usize).expect(&*format!("Error: Unknown variable '{}'", id))
     }
 }
 
