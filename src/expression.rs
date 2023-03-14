@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::instruction::ExecutableInstruction;
 use crate::interpreter::Interpreter;
 use crate::operators::Operator;
@@ -7,6 +9,12 @@ pub enum Data {
     String(String),
     Number(f64),
     Bool(bool),
+}
+
+impl fmt::Display for Data {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
 #[derive(Clone, Debug)]

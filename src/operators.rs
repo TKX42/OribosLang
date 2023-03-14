@@ -13,34 +13,28 @@ pub trait Operator: DynClone + Debug {
 
 // region "Add"
 #[derive(Clone, Debug)]
-pub struct Add {}
+pub struct Add {
+    name: String,
+}
 
 impl Operator for Add {
     fn create() -> Box<dyn Operator> where Self: Sized {
-        Box::new(Add {})
+        Box::new(Add {
+            name: "addition".to_string()
+        })
     }
 
     fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
         let left_val = evaluate(left, interpreter);
         let right_val = evaluate(right, interpreter);
         match left_val {
-            Data::String(_ls) => {
+            Data::Number(ref left_x) => {
                 match right_val {
-                    Data::String(_) => { panic!("Error: Cannot add type 'string' and 'string'") }
-                    Data::Number(_) => { panic!("Error: Cannot add type 'string' and 'number'") }
-                    Data::Bool(_) => { panic!("Error: Cannot add type 'string' and 'bool'") }
+                    Data::Number(ref right_x) => { Data::Number(left_x + right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
                 }
             }
-            Data::Number(ln) => {
-                match right_val {
-                    Data::String(_) => { panic!("Error: Cannot add type 'number' and 'string'") }
-                    Data::Bool(_) => { panic!("Error: Cannot add type 'number' and 'bool'") }
-                    Data::Number(rn) => { Data::Number(ln + rn) }
-                }
-            }
-            Data::Bool(_) => {
-                panic!("Cannot perform addition on type 'bool'");
-            }
+            _ => operator_error_single(&self.name, left_val.to_string())
         }
     }
 }
@@ -48,34 +42,28 @@ impl Operator for Add {
 
 // region "Sub"
 #[derive(Clone, Debug)]
-pub struct Sub {}
+pub struct Sub {
+    name: String,
+}
 
 impl Operator for Sub {
     fn create() -> Box<dyn Operator> where Self: Sized {
-        Box::new(Sub {})
+        Box::new(Sub {
+            name: "subtraction".to_string()
+        })
     }
 
     fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
         let left_val = evaluate(left, interpreter);
         let right_val = evaluate(right, interpreter);
         match left_val {
-            Data::String(_ls) => {
+            Data::Number(ref left_x) => {
                 match right_val {
-                    Data::String(_) => { panic!("Error: Cannot sub type 'string' and 'string'") }
-                    Data::Number(_) => { panic!("Error: Cannot sub type 'string' and 'number'") }
-                    Data::Bool(_) => { panic!("Error: Cannot sub type 'string' and 'bool'") }
+                    Data::Number(ref right_x) => { Data::Number(left_x - right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
                 }
             }
-            Data::Number(ln) => {
-                match right_val {
-                    Data::String(_) => { panic!("Error: Cannot sub type 'number' and 'string'") }
-                    Data::Bool(_) => { panic!("Error: Cannot sub type 'number' and 'bool'") }
-                    Data::Number(rn) => { Data::Number(ln - rn) }
-                }
-            }
-            Data::Bool(_) => {
-                panic!("Cannot perform subtraction on type 'bool'");
-            }
+            _ => operator_error_single(&self.name, left_val.to_string())
         }
     }
 }
@@ -83,34 +71,28 @@ impl Operator for Sub {
 
 // region "Mul"
 #[derive(Clone, Debug)]
-pub struct Mul {}
+pub struct Mul {
+    name: String,
+}
 
 impl Operator for Mul {
     fn create() -> Box<dyn Operator> where Self: Sized {
-        Box::new(Mul {})
+        Box::new(Mul {
+            name: "multiplication".parse().unwrap()
+        })
     }
 
     fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
         let left_val = evaluate(left, interpreter);
         let right_val = evaluate(right, interpreter);
         match left_val {
-            Data::String(_ls) => {
+            Data::Number(ref left_x) => {
                 match right_val {
-                    Data::String(_) => { panic!("Error: Cannot mul type 'string' and 'string'") }
-                    Data::Number(_) => { panic!("Error: Cannot mul type 'string' and 'number'") }
-                    Data::Bool(_) => { panic!("Error: Cannot mul type 'string' and 'bool'") }
+                    Data::Number(right_x) => { Data::Number(left_x * right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
                 }
             }
-            Data::Number(ln) => {
-                match right_val {
-                    Data::String(_) => { panic!("Error: Cannot mul type 'number' and 'string'") }
-                    Data::Bool(_) => { panic!("Error: Cannot mul type 'number' and 'bool'") }
-                    Data::Number(rn) => { Data::Number(ln * rn) }
-                }
-            }
-            Data::Bool(_) => {
-                panic!("Cannot perform multiplication on type 'bool'");
-            }
+            _ => operator_error_single(&self.name, left_val.to_string())
         }
     }
 }
@@ -118,34 +100,28 @@ impl Operator for Mul {
 
 // region "Div"
 #[derive(Clone, Debug)]
-pub struct Div {}
+pub struct Div {
+    name: String,
+}
 
 impl Operator for Div {
     fn create() -> Box<dyn Operator> where Self: Sized {
-        Box::new(Div {})
+        Box::new(Div {
+            name: "division".parse().unwrap()
+        })
     }
 
     fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
         let left_val = evaluate(left, interpreter);
         let right_val = evaluate(right, interpreter);
         match left_val {
-            Data::String(_ls) => {
+            Data::Number(ref left_x) => {
                 match right_val {
-                    Data::String(_) => { panic!("Error: Cannot div type 'string' and 'string'") }
-                    Data::Number(_) => { panic!("Error: Cannot div type 'string' and 'number'") }
-                    Data::Bool(_) => { panic!("Error: Cannot div type 'string' and 'bool'") }
+                    Data::Number(ref right_x) => { Data::Number(left_x / right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
                 }
             }
-            Data::Number(ln) => {
-                match right_val {
-                    Data::String(_) => { panic!("Error: Cannot div type 'number' and 'string'") }
-                    Data::Bool(_) => { panic!("Error: Cannot div type 'number' and 'bool'") }
-                    Data::Number(rn) => { Data::Number(ln / rn) }
-                }
-            }
-            Data::Bool(_) => {
-                panic!("Cannot perform division on type 'bool'");
-            }
+            _ => operator_error_single(&self.name, left_val.to_string())
         }
     }
 }
@@ -153,36 +129,37 @@ impl Operator for Div {
 
 // region "Equals"
 #[derive(Clone, Debug)]
-pub struct Equals {}
+pub struct Equals {
+    name: String,
+}
 
 impl Operator for Equals {
     fn create() -> Box<dyn Operator> where Self: Sized {
-        Box::new(Equals {})
+        Box::new(Equals {
+            name: "equals".parse().unwrap()
+        })
     }
 
     fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
         let left_val = evaluate(left, interpreter);
         let right_val = evaluate(right, interpreter);
         match left_val {
-            Data::String(ls) => {
+            Data::String(ref left_x) => {
                 match right_val {
-                    Data::String(rs) => { Data::Bool(ls == rs) }
-                    Data::Number(_) => { panic!("Error: Cannot equals type 'string' and 'number'") }
-                    Data::Bool(_) => { panic!("Error: Cannot equals type 'string' and 'bool'") }
+                    Data::String(ref right_x) => { Data::Bool(left_x == right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
                 }
             }
-            Data::Number(ln) => {
+            Data::Number(ref left_x) => {
                 match right_val {
-                    Data::String(_) => { panic!("Error: Cannot equals type 'number' and 'string'") }
-                    Data::Bool(_) => { panic!("Error: Cannot equals type 'number' and 'bool'") }
-                    Data::Number(rn) => { Data::Bool(ln == rn) }
+                    Data::Number(ref right_x) => { Data::Bool(left_x == right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
                 }
             }
-            Data::Bool(lb) => {
+            Data::Bool(ref left_x) => {
                 match right_val {
-                    Data::String(_) => { panic!("Error: Cannot equals type 'bool' and 'string'") }
-                    Data::Number(_) => { panic!("Error: Cannot equals type 'bool' and 'number'") }
-                    Data::Bool(rb) => { Data::Bool(lb == rb) }
+                    Data::Bool(ref right_x) => { Data::Bool(left_x == right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
                 }
             }
         }
@@ -192,30 +169,28 @@ impl Operator for Equals {
 
 // region "Modulo"
 #[derive(Clone, Debug)]
-pub struct Modulo {}
+pub struct Modulo {
+    name: String,
+}
 
 impl Operator for Modulo {
     fn create() -> Box<dyn Operator> where Self: Sized {
-        Box::new(Modulo {})
+        Box::new(Modulo {
+            name: "modulo".parse().unwrap()
+        })
     }
 
     fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
         let left_val = evaluate(left, interpreter);
         let right_val = evaluate(right, interpreter);
         match left_val {
-            Data::String(_) => {
-                panic!("Cannot perform modulo on type 'string'")
-            }
-            Data::Number(ln) => {
+            Data::Number(ref left_x) => {
                 match right_val {
-                    Data::String(_) => { panic!("Error: Cannot mod type 'number' and 'string'") }
-                    Data::Bool(_) => { panic!("Error: Cannot mod type 'number' and 'bool'") }
-                    Data::Number(rn) => { Data::Number(ln % rn) }
+                    Data::Number(right_x) => { Data::Number(left_x % right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
                 }
             }
-            Data::Bool(_) => {
-                panic!("Cannot perform modulo on type 'bool'");
-            }
+            _ => operator_error_single(&self.name, left_val.to_string())
         }
     }
 }
@@ -223,39 +198,48 @@ impl Operator for Modulo {
 
 // region "NotEquals"
 #[derive(Clone, Debug)]
-pub struct NotEquals {}
+pub struct NotEquals {
+    name: String,
+}
 
 impl Operator for NotEquals {
     fn create() -> Box<dyn Operator> where Self: Sized {
-        Box::new(NotEquals {})
+        Box::new(NotEquals {
+            name: "not_equals".parse().unwrap()
+        })
     }
 
     fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
         let left_val = evaluate(left, interpreter);
         let right_val = evaluate(right, interpreter);
         match left_val {
-            Data::String(ls) => {
+            Data::String(ref left_x) => {
                 match right_val {
-                    Data::String(rs) => { Data::Bool(ls != rs) }
-                    Data::Number(_) => { panic!("Error: Cannot not_equals type 'string' and 'number'") }
-                    Data::Bool(_) => { panic!("Error: Cannot not_equals type 'string' and 'bool'") }
+                    Data::String(ref right_x) => { Data::Bool(left_x != right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
                 }
             }
-            Data::Number(ln) => {
+            Data::Number(ref left_x) => {
                 match right_val {
-                    Data::String(_) => { panic!("Error: Cannot not_equals type 'number' and 'string'") }
-                    Data::Bool(_) => { panic!("Error: Cannot not_equals type 'number' and 'bool'") }
-                    Data::Number(rn) => { Data::Bool(ln != rn) }
+                    Data::Number(ref right_x) => { Data::Bool(left_x != right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
                 }
             }
-            Data::Bool(lb) => {
+            Data::Bool(ref left_x) => {
                 match right_val {
-                    Data::String(_) => { panic!("Error: Cannot not_equals type 'bool' and 'string'") }
-                    Data::Number(_) => { panic!("Error: Cannot not_equals type 'bool' and 'number'") }
-                    Data::Bool(rb) => { Data::Bool(lb != rb) }
+                    Data::Bool(ref right_x) => { Data::Bool(left_x != right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
                 }
             }
         }
     }
 }
 // endregion
+
+fn operator_error(operation: &String, type_left: String, type_right: String) -> Data {
+    panic!("Error: Cannot perform '{}' on '{}' and '{}'", operation, type_left, type_right);
+}
+
+fn operator_error_single(operation: &String, type_left: String) -> Data {
+    panic!("Error: Cannot perform '{}' on '{}'", operation, type_left);
+}
