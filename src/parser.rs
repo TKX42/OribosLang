@@ -14,7 +14,7 @@ use crate::instruction::get::GetInstruction;
 use crate::instruction::if_instr::IfInstruction;
 use crate::instruction::print::PrintInstruction;
 use crate::instruction::time::TimeInstruction;
-use crate::operators::{Add, Div, Equals, Modulo, Mul, Operator, Sub};
+use crate::operators::{Add, Div, Equals, Modulo, Mul, NotEquals, Operator, Sub};
 
 #[derive(Parser)]
 #[grammar = "oriboslang.pest"]
@@ -63,6 +63,7 @@ fn parse_operation(operation: Pair<Rule>, identifier_table: &mut IdentifierTable
             Rule::div => { operators.push(Div::create()) }
             Rule::modulo => { operators.push(Modulo::create()) }
             Rule::equals => { operators.push(Equals::create()) }
+            Rule::not_equals => { operators.push(NotEquals::create()) }
             _ => { operations.push(parse_operation(operation_type, identifier_table)) }       // operation needs to be further resolved
         }
     }

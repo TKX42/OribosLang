@@ -47,8 +47,9 @@ mul    = { "*" }
 div    = { "/" }
 modulo = { "%" }
 
-comparison = { value ~ equals ~ value }
+comparison = { value ~ (equals|not_equals) ~ value }
 equals     = { "==" }
+not_equals = { "!=" }
 
 semicolon       = _{ ";" }
 open_bracket    = _{ "(" }

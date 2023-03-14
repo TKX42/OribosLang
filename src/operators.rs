@@ -220,3 +220,42 @@ impl Operator for Modulo {
     }
 }
 // endregion
+
+// region "NotEquals"
+#[derive(Clone, Debug)]
+pub struct NotEquals {}
+
+impl Operator for NotEquals {
+    fn create() -> Box<dyn Operator> where Self: Sized {
+        Box::new(NotEquals {})
+    }
+
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
+        let left_val = evaluate(left, interpreter);
+        let right_val = evaluate(right, interpreter);
+        match left_val {
+            Data::String(ls) => {
+                match right_val {
+                    Data::String(rs) => { Data::Bool(ls != rs) }
+                    Data::Number(_) => { panic!("Error: Cannot not_equals type 'string' and 'number'") }
+                    Data::Bool(_) => { panic!("Error: Cannot not_equals type 'string' and 'bool'") }
+                }
+            }
+            Data::Number(ln) => {
+                match right_val {
+                    Data::String(_) => { panic!("Error: Cannot not_equals type 'number' and 'string'") }
+                    Data::Bool(_) => { panic!("Error: Cannot not_equals type 'number' and 'bool'") }
+                    Data::Number(rn) => { Data::Bool(ln != rn) }
+                }
+            }
+            Data::Bool(lb) => {
+                match right_val {
+                    Data::String(_) => { panic!("Error: Cannot not_equals type 'bool' and 'string'") }
+                    Data::Number(_) => { panic!("Error: Cannot not_equals type 'bool' and 'number'") }
+                    Data::Bool(rb) => { Data::Bool(lb != rb) }
+                }
+            }
+        }
+    }
+}
+// endregion
