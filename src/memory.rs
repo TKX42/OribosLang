@@ -21,7 +21,13 @@ impl Memory {
     }
 
     pub fn get(&self, id: i64) -> &Data {
-        self.mem.get((id - 1) as usize).expect(&*format!("Error: Unknown variable '{}'", id))
+        match self.mem.get((id - 1) as usize) {
+            None => {
+                memory_error(id);
+                unreachable!()
+            }
+            Some(x) => {x}
+        }
     }
 }
 
@@ -29,4 +35,8 @@ impl Default for Memory {
     fn default() -> Self {
         Self::new()
     }
+}
+
+fn memory_error(id: i64) {
+    panic!("Error: Unknown variable {}", id);
 }
