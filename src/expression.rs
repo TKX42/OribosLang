@@ -40,8 +40,8 @@ impl DataExpression {
         DataExpression::new(Data::Number(0.0))
     }
 
-    pub fn evaluate(&self) -> Data {
-        self.data.clone()
+    pub fn evaluate(&self) -> &Data {
+        &self.data
     }
 }
 
@@ -68,15 +68,15 @@ impl OperationExpression {
 
 pub fn evaluate(expression: &Expression, interpreter: &mut Interpreter) -> Data {
     match expression {
-        Expression::Data(dexpr) => { dexpr.evaluate() }
+        Expression::Data(dexpr) => { dexpr.evaluate().clone() }
         Expression::ExecutableInstruction(instr) => { evaluate(&instr.exec(interpreter), interpreter) }
         Expression::Operation(opexpr) => { opexpr.evaluate(interpreter) }
     }
 }
 
-pub fn get_number(data: Data) -> f64 {
+pub fn get_number(data: &Data) -> f64 {
     match data {
-        Data::Number(n) => { n }
+        Data::Number(n) => { *n }
         _ => { panic!("Error: Could not parse number of data {:?}", data) }
     }
 }

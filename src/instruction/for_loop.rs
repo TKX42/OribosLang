@@ -32,8 +32,8 @@ impl ExecutableInstruction for ForLoopInstruction {
     }
 
     fn exec(&self, interpreter: &mut Interpreter) -> Expression {
-        let start = get_number(evaluate(&self.start_i, interpreter)) as i64;
-        let end = get_number(evaluate(&self.end_i, interpreter)) as i64;
+        let start = get_number(&evaluate(&self.start_i, interpreter)) as i64;
+        let end = get_number(&evaluate(&self.end_i, interpreter)) as i64;
 
         for i in start..end {
             interpreter.memory().assign(self.counter_var_id, Data::Number(i as f64));
