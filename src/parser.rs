@@ -139,7 +139,7 @@ fn create_instruction(instr_name: String, instr_parameters: Vec<Expression>) -> 
         "print" => PrintInstruction::init(&instr_parameters),
         "time" => TimeInstruction::init(&instr_parameters),
         "answer" => AnswerInstruction::init(&instr_parameters),
-        _ => { panic!("Error: Unknown instruction '{}'", instr_name) }
+        _ => { panic!("Error: Unknown instruction '{instr_name}'") }
     }
 }
 

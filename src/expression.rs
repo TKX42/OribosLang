@@ -13,7 +13,7 @@ pub enum Data {
 
 impl fmt::Display for Data {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
+        write!(f, "{self:?}")
     }
 }
 
@@ -77,6 +77,6 @@ pub fn evaluate(expression: &Expression, interpreter: &mut Interpreter) -> Data 
 pub fn get_number(data: &Data) -> f64 {
     match data {
         Data::Number(n) => { *n }
-        _ => { panic!("Error: Could not parse number of data {:?}", data) }
+        _ => { panic!("Error: Could not parse number of data {data:?}") }
     }
 }

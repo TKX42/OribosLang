@@ -38,5 +38,5 @@ impl Default for Memory {
 }
 
 fn memory_error(id: i64) {
-    panic!("Error: Unknown variable {}", id);
+    panic!("Error: Unknown variable {id}");
 }

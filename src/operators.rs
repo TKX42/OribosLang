@@ -237,9 +237,9 @@ impl Operator for NotEquals {
 // endregion
 
 fn operator_error(operation: &String, type_left: String, type_right: String) -> Data {
-    panic!("Error: Cannot perform '{}' on '{}' and '{}'", operation, type_left, type_right);
+    panic!("Error: Cannot perform '{operation}' on '{type_left}' and '{type_right}'");
 }
 
 fn operator_error_single(operation: &String, type_left: String) -> Data {
-    panic!("Error: Cannot perform '{}' on '{}'", operation, type_left);
+    panic!("Error: Cannot perform '{operation}' on '{type_left}'");
 }

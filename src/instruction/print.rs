@@ -26,8 +26,8 @@ impl ExecutableInstruction for PrintInstruction {
 
 fn print(data: &Data) {
     match data {
-        Data::String(s) => { println!("{}", s) }
-        Data::Number(n) => { println!("{}", n) }
-        Data::Bool(b) => { println!("{}", b) }
+        Data::String(s) => { println!("{s}") }
+        Data::Number(n) => { println!("{n}") }
+        Data::Bool(b) => { println!("{b}") }
     }
 }
