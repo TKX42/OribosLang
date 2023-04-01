@@ -19,7 +19,7 @@ impl Interpreter {
         self.run_statements(&self.ast.clone());
     }
 
-    pub fn run_statements(&mut self, statements: &Vec<Box<dyn ExecutableInstruction>>) {
+    pub fn run_statements(&mut self, statements: &[Box<dyn ExecutableInstruction>]) {
         statements.iter().for_each(|instr|{instr.exec(self);});
     }
 
