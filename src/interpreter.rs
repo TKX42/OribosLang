@@ -16,15 +16,11 @@ impl Interpreter {
     }
 
     pub fn run(&mut self) {
-        for instruction in &self.ast.clone() {
-            instruction.exec(self);
-        }
+        self.run_statements(&self.ast.clone());
     }
 
     pub fn run_statements(&mut self, statements: &Vec<Box<dyn ExecutableInstruction>>) {
-        for instr in statements {
-            instr.exec(self);
-        }
+        statements.iter().for_each(|instr|{instr.exec(self);});
     }
 
     pub fn memory(&mut self) -> &mut Memory {
