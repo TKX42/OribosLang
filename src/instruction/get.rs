@@ -1,4 +1,4 @@
-use crate::expression::{DataExpression, Expression};
+use crate::expression::{Data, Expression};
 use crate::instruction::ExecutableInstruction;
 use crate::interpreter::Interpreter;
 
@@ -25,7 +25,7 @@ impl ExecutableInstruction for GetInstruction {
         unreachable!()
     }
 
-    fn exec(&self, interpreter: &mut Interpreter) -> Expression {
-        Expression::Data(DataExpression::new(interpreter.memory().get(self.var_id).clone()))      // !!! TODO: evaluate clone for runtime performance
+    fn exec(&self, interpreter: &mut Interpreter) -> Data {
+        interpreter.memory().get(self.var_id).clone()      // !!! TODO: evaluate clone for runtime performance
     }
 }

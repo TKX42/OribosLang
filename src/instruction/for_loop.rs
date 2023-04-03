@@ -1,4 +1,4 @@
-use crate::expression::{Data, DataExpression, evaluate, Expression, get_number};
+use crate::expression::{Data, evaluate, Expression, get_number};
 use crate::instruction::ExecutableInstruction;
 use crate::interpreter::Interpreter;
 
@@ -31,7 +31,7 @@ impl ExecutableInstruction for ForLoopInstruction {
         unreachable!()
     }
 
-    fn exec(&self, interpreter: &mut Interpreter) -> Expression {
+    fn exec(&self, interpreter: &mut Interpreter) -> Data {
         let start = get_number(&evaluate(&self.start_i, interpreter)) as i64;
         let end = get_number(&evaluate(&self.end_i, interpreter)) as i64;
 
@@ -40,6 +40,6 @@ impl ExecutableInstruction for ForLoopInstruction {
             interpreter.run_statements(&self.statements);
         }
 
-        Expression::Data(DataExpression::empty())
+        Data::Number(0.0)
     }
 }

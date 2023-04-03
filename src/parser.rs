@@ -6,7 +6,6 @@ use pest::iterators::Pair;
 use pest::Parser;
 
 use crate::expression::{Data, DataExpression, Expression, OperationExpression};
-use crate::instruction::answer::AnswerInstruction;
 use crate::instruction::assignment::AssignmentInstruction;
 use crate::instruction::ExecutableInstruction;
 use crate::instruction::for_loop::ForLoopInstruction;
@@ -138,7 +137,6 @@ fn create_instruction(instr_name: String, instr_parameters: Vec<Expression>) -> 
     match instr_name.as_str() {
         "print" => PrintInstruction::init(&instr_parameters),
         "time" => TimeInstruction::init(&instr_parameters),
-        "answer" => AnswerInstruction::init(&instr_parameters),
         _ => { panic!("Error: Unknown instruction '{instr_name}'") }
     }
 }

@@ -1,4 +1,4 @@
-use crate::expression::{Data, DataExpression, evaluate, Expression};
+use crate::expression::{Data, evaluate, Expression};
 use crate::instruction::ExecutableInstruction;
 use crate::interpreter::Interpreter;
 
@@ -18,9 +18,9 @@ impl ExecutableInstruction for PrintInstruction {
         })
     }
 
-    fn exec(&self, interpreter: &mut Interpreter) -> Expression {
+    fn exec(&self, interpreter: &mut Interpreter) -> Data {
         print(&evaluate(&self.data, interpreter));
-        Expression::Data(DataExpression::empty())
+        Data::Number(0.0)
     }
 }
 

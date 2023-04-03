@@ -69,7 +69,7 @@ impl OperationExpression {
 pub fn evaluate(expression: &Expression, interpreter: &mut Interpreter) -> Data {
     match expression {
         Expression::Data(dexpr) => { dexpr.evaluate().clone() }
-        Expression::ExecutableInstruction(instr) => { evaluate(&instr.exec(interpreter), interpreter) }
+        Expression::ExecutableInstruction(instr) => { instr.exec(interpreter) }
         Expression::Operation(opexpr) => { opexpr.evaluate(interpreter) }
     }
 }

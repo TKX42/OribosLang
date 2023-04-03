@@ -1,4 +1,4 @@
-use crate::expression::{Data, DataExpression, evaluate, Expression};
+use crate::expression::{Data, evaluate, Expression};
 use crate::instruction::ExecutableInstruction;
 use crate::interpreter::Interpreter;
 
@@ -29,7 +29,7 @@ impl ExecutableInstruction for IfInstruction {
         unreachable!()
     }
 
-    fn exec(&self, interpreter: &mut Interpreter) -> Expression {
+    fn exec(&self, interpreter: &mut Interpreter) -> Data {
         let check = evaluate(&self.comparison, interpreter);
         match check {
             Data::String(_) => { panic!("Error: Invalid type 'string' given as expression for if instruction") }
@@ -43,6 +43,6 @@ impl ExecutableInstruction for IfInstruction {
             }
         }
 
-        Expression::Data(DataExpression::empty())
+        Data::Number(0.0)
     }
 }

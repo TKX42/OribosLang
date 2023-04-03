@@ -1,6 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::expression::{Data, DataExpression, Expression};
+use crate::expression::{Data, Expression};
 use crate::instruction::ExecutableInstruction;
 use crate::interpreter::Interpreter;
 
@@ -16,9 +16,9 @@ impl ExecutableInstruction for TimeInstruction {
         Box::new(TimeInstruction {})
     }
 
-    fn exec(&self, _interpreter: &mut Interpreter) -> Expression {
+    fn exec(&self, _interpreter: &mut Interpreter) -> Data {
         let start = SystemTime::now();
         let since_the_epoch = start.duration_since(UNIX_EPOCH).unwrap();
-        Expression::Data(DataExpression::new(Data::String(since_the_epoch.as_millis().to_string())))
+        Data::String(since_the_epoch.as_millis().to_string())
     }
 }
