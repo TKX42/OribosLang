@@ -22,7 +22,7 @@ pub trait ExecutableInstruction: DynClone + Debug {
 }
 
 pub struct Scope {
-    _break: bool,
+    pub(crate) _break: bool,
     pub(crate) _exit: bool,
     pub(crate) _exit_code: i32
 }

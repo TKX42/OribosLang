@@ -37,11 +37,7 @@ impl ExecutableInstruction for ForLoopInstruction {
 
         for i in start..end {
             interpreter.memory().assign(self.counter_var_id, Data::Number(i as f64));
-
-            for statement in &self.statements {
-                if scope._break { break; }
-                interpreter.run_statement(statement, scope);
-            }
+            interpreter.run_statements(&self.statements, scope);
         }
 
         scope._break = false;   // clear for possible outer loop

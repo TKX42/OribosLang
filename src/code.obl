@@ -1,9 +1,6 @@
 for(i,2,100){
     if(i==3){
-        print("exiting");
-        exit(0);
+        break();
+        print("oh no");
     };
-    print(i);
 };
-
-print("oh no");

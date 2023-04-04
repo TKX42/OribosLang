@@ -22,6 +22,7 @@ impl Interpreter {
 
     pub fn run_statements(&mut self, statements: &[Box<dyn ExecutableInstruction>], scope: &mut Scope) {
         for instr in statements {
+            if scope._break { break; }
             self.run_statement(instr, scope);
         }
     }
