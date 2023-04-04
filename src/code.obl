@@ -1,26 +1,9 @@
-print(time());
-
-num = 370248451;
-print("num");
-print(num);
-
-flag = false;
-if(num==1){
-   print("1 is not a prime number");
-   exit(1);
-};
-
-for(i,2,num){
-    if((num%2)==0){
-        flag = true;
-        break();
+for(i,2,100){
+    if(i==3){
+        print("exiting");
+        exit(0);
     };
+    print(i);
 };
 
-if(flag==true){
-    print("not a prime number");
-}else {
-    print("prime number");
-};
-
-print(time());
+print("oh no");

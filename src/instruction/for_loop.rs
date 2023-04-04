@@ -35,18 +35,16 @@ impl ExecutableInstruction for ForLoopInstruction {
         let start = get_number(&evaluate(&self.start_i, interpreter, scope)) as i64;
         let end = get_number(&evaluate(&self.end_i, interpreter, scope)) as i64;
 
-        // for loop creates it own scope
-        let mut scope = Scope::new();
-
         for i in start..end {
             interpreter.memory().assign(self.counter_var_id, Data::Number(i as f64));
 
             for statement in &self.statements {
                 if scope._break { break; }
-                statement.exec(interpreter, &mut scope);
+                interpreter.run_statement(statement, scope);
             }
         }
 
+        scope._break = false;   // clear for possible outer loop
         Data::Number(0.0)
     }
 }

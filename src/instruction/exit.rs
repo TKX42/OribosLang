@@ -20,7 +20,8 @@ impl ExecutableInstruction for ExitInstruction {
 
     fn exec(&self, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
         let exit_code = &evaluate(&self.data, interpreter, scope);
-        interpreter.exit_with_code(get_number(exit_code) as i64);
+        scope._exit = true;
+        scope._exit_code = get_number(exit_code) as i32;
         Data::Number(0.0)
     }
 }

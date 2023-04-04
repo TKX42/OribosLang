@@ -6,8 +6,6 @@ use crate::memory::Memory;
 pub struct Interpreter {
     ast: Vec<Box<dyn ExecutableInstruction>>,
     memory: Memory,
-    exit: bool,
-    exit_code: i64
 }
 
 impl Interpreter {
@@ -15,8 +13,6 @@ impl Interpreter {
         Interpreter {
             ast,
             memory: Memory::new(),
-            exit: false,
-            exit_code: 0
         }
     }
 
@@ -26,22 +22,21 @@ impl Interpreter {
 
     pub fn run_statements(&mut self, statements: &[Box<dyn ExecutableInstruction>], scope: &mut Scope) {
         for instr in statements {
-            if self.exit { self.exit(); }
-            instr.exec(self, scope);
+            self.run_statement(instr, scope);
         }
+    }
+
+    pub fn run_statement(&mut self, statement: &Box<dyn ExecutableInstruction>, scope: &mut Scope) {
+        if scope._exit { self.exit(scope._exit_code); }
+        statement.exec(self, scope);
     }
 
     pub fn memory(&mut self) -> &mut Memory {
         &mut self.memory
     }
 
-    pub fn exit_with_code(&mut self, exit_code: i64) {
-        self.exit = true;
-        self.exit_code = exit_code;
-    }
-
-    fn exit(&self) {
-        println!("Process ended with exit code {0}", self.exit_code);
+    fn exit(&self, exit_code: i32) {
+        println!("Process ended with exit code {0}", exit_code);
         process::exit(0);
     }
 }
