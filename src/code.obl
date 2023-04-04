@@ -1,8 +1,9 @@
-for(i,0,100){
-    if(i==42){
-        exit(42);
-    };
-    print(i);
-};
+print("D">"B");
+print(42>0);
+print(true>false);
 
-print("this wont be executed");
+print("D"<"B");
+print(42<0);
+print(true<false);
+
+print("B"<"D");

@@ -47,9 +47,11 @@ mul    = { "*" }
 div    = { "/" }
 modulo = { "%" }
 
-comparison = { value ~ (equals|not_equals) ~ value }
+comparison = { value ~ (equals|not_equals|greater|lesser) ~ value }
 equals     = { "==" }
 not_equals = { "!=" }
+greater = { ">" }
+lesser = { "<" }
 
 semicolon       = _{ ";" }
 open_bracket    = _{ "(" }

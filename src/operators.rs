@@ -236,6 +236,86 @@ impl Operator for NotEquals {
 }
 // endregion
 
+// region "Greater"
+#[derive(Clone, Debug)]
+pub struct Greater {
+    name: String,
+}
+
+impl Operator for Greater {
+    fn create() -> Box<dyn Operator> where Self: Sized {
+        Box::new(Greater {
+            name: "greater".parse().unwrap()
+        })
+    }
+
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
+        let left_val = evaluate(left, interpreter);
+        let right_val = evaluate(right, interpreter);
+        match left_val {
+            Data::String(ref left_x) => {
+                match right_val {
+                    Data::String(ref right_x) => { Data::Bool(left_x > right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
+                }
+            }
+            Data::Number(ref left_x) => {
+                match right_val {
+                    Data::Number(ref right_x) => { Data::Bool(left_x > right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
+                }
+            }
+            Data::Bool(ref left_x) => {
+                match right_val {
+                    Data::Bool(ref right_x) => { Data::Bool(left_x > right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
+                }
+            }
+        }
+    }
+}
+// endregion
+
+// region "Lesser"
+#[derive(Clone, Debug)]
+pub struct Lesser {
+    name: String,
+}
+
+impl Operator for Lesser {
+    fn create() -> Box<dyn Operator> where Self: Sized {
+        Box::new(Lesser {
+            name: "lesser".parse().unwrap()
+        })
+    }
+
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
+        let left_val = evaluate(left, interpreter);
+        let right_val = evaluate(right, interpreter);
+        match left_val {
+            Data::String(ref left_x) => {
+                match right_val {
+                    Data::String(ref right_x) => { Data::Bool(left_x < right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
+                }
+            }
+            Data::Number(ref left_x) => {
+                match right_val {
+                    Data::Number(ref right_x) => { Data::Bool(left_x < right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
+                }
+            }
+            Data::Bool(ref left_x) => {
+                match right_val {
+                    Data::Bool(ref right_x) => { Data::Bool(left_x < right_x) }
+                    _ => operator_error(&self.name, left_val.to_string(), right_val.to_string())
+                }
+            }
+        }
+    }
+}
+// endregion
+
 fn operator_error(operation: &String, type_left: String, type_right: String) -> Data {
     panic!("Error: Cannot perform '{operation}' on '{type_left}' and '{type_right}'");
 }
