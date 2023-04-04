@@ -13,6 +13,7 @@ use crate::instruction::for_loop::ForLoopInstruction;
 use crate::instruction::get::GetInstruction;
 use crate::instruction::if_instr::IfInstruction;
 use crate::instruction::print::PrintInstruction;
+use crate::instruction::r#break::BreakInstruction;
 use crate::instruction::time::TimeInstruction;
 use crate::operators::{Add, Div, Equals, Greater, Lesser, Modulo, Mul, NotEquals, Operator, Sub};
 
@@ -141,6 +142,7 @@ fn create_instruction(instr_name: String, instr_parameters: Vec<Expression>) -> 
         "print" => PrintInstruction::init(&instr_parameters),
         "time" => TimeInstruction::init(&instr_parameters),
         "exit" => ExitInstruction::init(&instr_parameters),
+        "break" => BreakInstruction::init(&instr_parameters),
         _ => { panic!("Error: Unknown instruction '{instr_name}'") }
     }
 }

@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::instruction::ExecutableInstruction;
+use crate::instruction::{ExecutableInstruction, Scope};
 use crate::interpreter::Interpreter;
 use crate::operators::Operator;
 
@@ -61,16 +61,16 @@ impl OperationExpression {
         }
     }
 
-    pub fn evaluate(&self, interpreter: &mut Interpreter) -> Data {
-        self.operator.evaluate(&self.left, &self.right, interpreter)
+    pub fn evaluate(&self, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        self.operator.evaluate(&self.left, &self.right, interpreter, scope)
     }
 }
 
-pub fn evaluate(expression: &Expression, interpreter: &mut Interpreter) -> Data {
+pub fn evaluate(expression: &Expression, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
     match expression {
         Expression::Data(dexpr) => { dexpr.evaluate().clone() }
-        Expression::ExecutableInstruction(instr) => { instr.exec(interpreter) }
-        Expression::Operation(opexpr) => { opexpr.evaluate(interpreter) }
+        Expression::ExecutableInstruction(instr) => { instr.exec(interpreter, scope) }
+        Expression::Operation(opexpr) => { opexpr.evaluate(interpreter, scope) }
     }
 }
 

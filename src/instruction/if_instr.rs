@@ -1,5 +1,5 @@
 use crate::expression::{Data, evaluate, Expression};
-use crate::instruction::ExecutableInstruction;
+use crate::instruction::{ExecutableInstruction, Scope};
 use crate::interpreter::Interpreter;
 
 #[derive(Clone, Debug)]
@@ -29,16 +29,16 @@ impl ExecutableInstruction for IfInstruction {
         unreachable!()
     }
 
-    fn exec(&self, interpreter: &mut Interpreter) -> Data {
-        let check = evaluate(&self.comparison, interpreter);
+    fn exec(&self, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        let check = evaluate(&self.comparison, interpreter, scope);
         match check {
             Data::String(_) => { panic!("Error: Invalid type 'string' given as expression for if instruction") }
             Data::Number(_) => { panic!("Error: Invalid type 'number' given as expression for if instruction") }
             Data::Bool(b) => {
                 if b {
-                    interpreter.run_statements(&self.true_statements);
+                    interpreter.run_statements(&self.true_statements, scope);
                 } else {
-                    interpreter.run_statements(&self.else_statements);
+                    interpreter.run_statements(&self.else_statements, scope);
                 }
             }
         }

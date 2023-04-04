@@ -1,9 +1,26 @@
-print("D">"B");
-print(42>0);
-print(true>false);
+print(time());
 
-print("D"<"B");
-print(42<0);
-print(true<false);
+num = 370248451;
+print("num");
+print(num);
 
-print("B"<"D");
+flag = false;
+if(num==1){
+   print("1 is not a prime number");
+   exit(1);
+};
+
+for(i,2,num){
+    if((num%2)==0){
+        flag = true;
+        break();
+    };
+};
+
+if(flag==true){
+    print("not a prime number");
+}else {
+    print("prime number");
+};
+
+print(time());

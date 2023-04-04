@@ -3,12 +3,13 @@ use std::fmt::Debug;
 use dyn_clone::DynClone;
 
 use crate::expression::{Data, evaluate, Expression};
+use crate::instruction::Scope;
 use crate::interpreter::Interpreter;
 
 dyn_clone::clone_trait_object!(Operator);
 pub trait Operator: DynClone + Debug {
     fn create() -> Box<dyn Operator> where Self: Sized;
-    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data;
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter, scope: &mut Scope) -> Data;
 }
 
 // region "Add"
@@ -24,9 +25,9 @@ impl Operator for Add {
         })
     }
 
-    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
-        let left_val = evaluate(left, interpreter);
-        let right_val = evaluate(right, interpreter);
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        let left_val = evaluate(left, interpreter, scope);
+        let right_val = evaluate(right, interpreter, scope);
         match left_val {
             Data::Number(ref left_x) => {
                 match right_val {
@@ -53,9 +54,9 @@ impl Operator for Sub {
         })
     }
 
-    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
-        let left_val = evaluate(left, interpreter);
-        let right_val = evaluate(right, interpreter);
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        let left_val = evaluate(left, interpreter, scope);
+        let right_val = evaluate(right, interpreter, scope);
         match left_val {
             Data::Number(ref left_x) => {
                 match right_val {
@@ -82,9 +83,9 @@ impl Operator for Mul {
         })
     }
 
-    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
-        let left_val = evaluate(left, interpreter);
-        let right_val = evaluate(right, interpreter);
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        let left_val = evaluate(left, interpreter, scope);
+        let right_val = evaluate(right, interpreter, scope);
         match left_val {
             Data::Number(ref left_x) => {
                 match right_val {
@@ -111,9 +112,9 @@ impl Operator for Div {
         })
     }
 
-    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
-        let left_val = evaluate(left, interpreter);
-        let right_val = evaluate(right, interpreter);
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        let left_val = evaluate(left, interpreter, scope);
+        let right_val = evaluate(right, interpreter, scope);
         match left_val {
             Data::Number(ref left_x) => {
                 match right_val {
@@ -140,9 +141,9 @@ impl Operator for Equals {
         })
     }
 
-    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
-        let left_val = evaluate(left, interpreter);
-        let right_val = evaluate(right, interpreter);
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        let left_val = evaluate(left, interpreter, scope);
+        let right_val = evaluate(right, interpreter, scope);
         match left_val {
             Data::String(ref left_x) => {
                 match right_val {
@@ -180,9 +181,9 @@ impl Operator for Modulo {
         })
     }
 
-    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
-        let left_val = evaluate(left, interpreter);
-        let right_val = evaluate(right, interpreter);
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        let left_val = evaluate(left, interpreter, scope);
+        let right_val = evaluate(right, interpreter, scope);
         match left_val {
             Data::Number(ref left_x) => {
                 match right_val {
@@ -209,9 +210,9 @@ impl Operator for NotEquals {
         })
     }
 
-    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
-        let left_val = evaluate(left, interpreter);
-        let right_val = evaluate(right, interpreter);
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        let left_val = evaluate(left, interpreter, scope);
+        let right_val = evaluate(right, interpreter, scope);
         match left_val {
             Data::String(ref left_x) => {
                 match right_val {
@@ -249,9 +250,9 @@ impl Operator for Greater {
         })
     }
 
-    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
-        let left_val = evaluate(left, interpreter);
-        let right_val = evaluate(right, interpreter);
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        let left_val = evaluate(left, interpreter, scope);
+        let right_val = evaluate(right, interpreter, scope);
         match left_val {
             Data::String(ref left_x) => {
                 match right_val {
@@ -289,9 +290,9 @@ impl Operator for Lesser {
         })
     }
 
-    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter) -> Data {
-        let left_val = evaluate(left, interpreter);
-        let right_val = evaluate(right, interpreter);
+    fn evaluate(&self, left: &Expression, right: &Expression, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        let left_val = evaluate(left, interpreter, scope);
+        let right_val = evaluate(right, interpreter, scope);
         match left_val {
             Data::String(ref left_x) => {
                 match right_val {

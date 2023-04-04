@@ -1,5 +1,5 @@
 use crate::expression::{Data, evaluate, Expression};
-use crate::instruction::ExecutableInstruction;
+use crate::instruction::{ExecutableInstruction, Scope};
 use crate::interpreter::Interpreter;
 
 #[derive(Clone, Debug)]
@@ -27,8 +27,8 @@ impl ExecutableInstruction for AssignmentInstruction {
         unreachable!()
     }
 
-    fn exec(&self, interpreter: &mut Interpreter) -> Data {
-        let expr = evaluate(&self.var_expression, interpreter);
+    fn exec(&self, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        let expr = evaluate(&self.var_expression, interpreter, scope);
         interpreter.memory().assign(self.var_id, expr);
         //self.var_expression.clone()     // TODO evaluate performance
         Data::Number(0.0)

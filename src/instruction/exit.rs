@@ -1,5 +1,5 @@
 use crate::expression::{Data, evaluate, Expression, get_number};
-use crate::instruction::ExecutableInstruction;
+use crate::instruction::{ExecutableInstruction, Scope};
 use crate::interpreter::Interpreter;
 
 #[derive(Clone, Debug)]
@@ -18,8 +18,8 @@ impl ExecutableInstruction for ExitInstruction {
         })
     }
 
-    fn exec(&self, interpreter: &mut Interpreter) -> Data {
-        let exit_code = &evaluate(&self.data, interpreter);
+    fn exec(&self, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        let exit_code = &evaluate(&self.data, interpreter, scope);
         interpreter.exit_with_code(get_number(exit_code) as i64);
         Data::Number(0.0)
     }

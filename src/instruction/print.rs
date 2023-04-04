@@ -1,5 +1,5 @@
 use crate::expression::{Data, evaluate, Expression};
-use crate::instruction::ExecutableInstruction;
+use crate::instruction::{ExecutableInstruction, Scope};
 use crate::interpreter::Interpreter;
 
 #[derive(Clone, Debug)]
@@ -18,8 +18,8 @@ impl ExecutableInstruction for PrintInstruction {
         })
     }
 
-    fn exec(&self, interpreter: &mut Interpreter) -> Data {
-        print(&evaluate(&self.data, interpreter));
+    fn exec(&self, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        print(&evaluate(&self.data, interpreter, scope));
         Data::Number(0.0)
     }
 }

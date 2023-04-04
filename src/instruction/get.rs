@@ -1,5 +1,5 @@
 use crate::expression::{Data, Expression};
-use crate::instruction::ExecutableInstruction;
+use crate::instruction::{ExecutableInstruction, Scope};
 use crate::interpreter::Interpreter;
 
 #[derive(Clone, Debug)]
@@ -25,7 +25,7 @@ impl ExecutableInstruction for GetInstruction {
         unreachable!()
     }
 
-    fn exec(&self, interpreter: &mut Interpreter) -> Data {
+    fn exec(&self, interpreter: &mut Interpreter, _scope: &mut Scope) -> Data {
         interpreter.memory().get(self.var_id).clone()      // !!! TODO: evaluate clone for runtime performance
     }
 }

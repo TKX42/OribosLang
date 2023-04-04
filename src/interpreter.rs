@@ -1,5 +1,5 @@
 use std::process;
-use crate::instruction::ExecutableInstruction;
+use crate::instruction::{ExecutableInstruction, Scope};
 use crate::memory::Memory;
 
 #[derive(Debug)]
@@ -21,13 +21,13 @@ impl Interpreter {
     }
 
     pub fn run(&mut self) {
-        self.run_statements(&self.ast.clone());
+        self.run_statements(&self.ast.clone(), &mut Scope::new());
     }
 
-    pub fn run_statements(&mut self, statements: &[Box<dyn ExecutableInstruction>]) {
+    pub fn run_statements(&mut self, statements: &[Box<dyn ExecutableInstruction>], scope: &mut Scope) {
         for instr in statements {
             if self.exit { self.exit(); }
-            instr.exec(self);
+            instr.exec(self, scope);
         }
     }
 

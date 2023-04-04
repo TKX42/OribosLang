@@ -1,5 +1,5 @@
 use crate::expression::{Data, evaluate, Expression, get_number};
-use crate::instruction::ExecutableInstruction;
+use crate::instruction::{ExecutableInstruction, Scope};
 use crate::interpreter::Interpreter;
 
 #[derive(Clone, Debug)]
@@ -31,13 +31,20 @@ impl ExecutableInstruction for ForLoopInstruction {
         unreachable!()
     }
 
-    fn exec(&self, interpreter: &mut Interpreter) -> Data {
-        let start = get_number(&evaluate(&self.start_i, interpreter)) as i64;
-        let end = get_number(&evaluate(&self.end_i, interpreter)) as i64;
+    fn exec(&self, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+        let start = get_number(&evaluate(&self.start_i, interpreter, scope)) as i64;
+        let end = get_number(&evaluate(&self.end_i, interpreter, scope)) as i64;
+
+        // for loop creates it own scope
+        let mut scope = Scope::new();
 
         for i in start..end {
             interpreter.memory().assign(self.counter_var_id, Data::Number(i as f64));
-            interpreter.run_statements(&self.statements);
+
+            for statement in &self.statements {
+                if scope._break { break; }
+                statement.exec(interpreter, &mut scope);
+            }
         }
 
         Data::Number(0.0)
