@@ -1,24 +1,26 @@
 print(time());
 
-num = 9781;
+num = 42;
 print("num");
 print(num);
 
 flag = false;
 if(num==1){
    print("1 is not a prime number");
-}else {
-    for(i,2,num){
-        if((num%2)==0){
-            flag = true;
-        };
-    };
+   exit(1);
+};
 
-    if(flag==true){
-        print("not a prime number");
-    }else {
-        print("prime number");
+for(i,2,num){
+    if((num%2)==0){
+        flag = true;
+        break();
     };
+};
+
+if(flag==true){
+    print("not a prime number");
+}else {
+    print("prime number");
 };
 
 print(time());
