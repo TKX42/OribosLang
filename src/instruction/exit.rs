@@ -9,7 +9,7 @@ pub struct ExitInstruction {
 
 impl ExecutableInstruction for ExitInstruction {
     fn name(&self) -> String {
-        String::from("print")
+        String::from("exit")
     }
 
     fn init(parameters: &[Expression]) -> Box<dyn ExecutableInstruction> {
