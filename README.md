@@ -1,6 +1,7 @@
 # OribosLang
 
 ## example code
+
 calculate if a number is a prime number:
 
     num = 9781;

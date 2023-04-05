@@ -1,6 +1,6 @@
-use crate::compiler::statement::{CompilerStatement, Scope};
-use crate::compiler::expression::{Data, evaluate, Expression};
 use crate::compiler::compile::Compiler;
+use crate::compiler::expression::{Data, evaluate, Expression};
+use crate::compiler::statement::{CompilerStatement, Scope};
 
 #[derive(Clone, Debug)]
 pub struct AssignmentStatement {
@@ -30,7 +30,6 @@ impl CompilerStatement for AssignmentStatement {
     fn compile(&self, interpreter: &mut Compiler, scope: &mut Scope) -> Data {
         let expr = evaluate(&self.var_expression, interpreter, scope);
         interpreter.memory().assign(self.var_id, expr);
-        //self.var_expression.clone()     // TODO evaluate performance
         Data::Number(0.0)
     }
 }

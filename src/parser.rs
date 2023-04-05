@@ -4,6 +4,8 @@ use std::ops::Deref;
 
 use pest::iterators::Pair;
 use pest::Parser;
+
+use crate::compiler::expression::{Data, DataExpression, Expression, OperationExpression};
 use crate::compiler::statement::assignment::AssignmentStatement;
 use crate::compiler::statement::CompilerStatement;
 use crate::compiler::statement::exit::ExitStatement;
@@ -12,8 +14,6 @@ use crate::compiler::statement::get::GetStatement;
 use crate::compiler::statement::if_instr::IfStatement;
 use crate::compiler::statement::print::PrintStatement;
 use crate::compiler::statement::r#break::BreakStatement;
-
-use crate::compiler::expression::{Data, DataExpression, Expression, OperationExpression};
 use crate::operators::{Add, Div, Equals, Greater, Lesser, Modulo, Mul, NotEquals, Operator, Sub};
 
 #[derive(Parser)]

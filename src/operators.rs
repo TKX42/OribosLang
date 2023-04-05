@@ -1,10 +1,10 @@
 use std::fmt::Debug;
 
 use dyn_clone::DynClone;
-use crate::compiler::statement::Scope;
 
-use crate::compiler::expression::{Data, evaluate, Expression};
 use crate::compiler::compile::Compiler;
+use crate::compiler::expression::{Data, evaluate, Expression};
+use crate::compiler::statement::Scope;
 
 dyn_clone::clone_trait_object!(Operator);
 pub trait Operator: DynClone + Debug {

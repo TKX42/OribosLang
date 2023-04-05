@@ -26,7 +26,7 @@ impl Memory {
                 memory_error(id);
                 unreachable!()
             }
-            Some(x) => {x}
+            Some(x) => { x }
         }
     }
 }

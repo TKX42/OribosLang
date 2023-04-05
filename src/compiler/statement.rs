@@ -2,8 +2,8 @@ use std::fmt::Debug;
 
 use dyn_clone::DynClone;
 
-use crate::compiler::expression::{Data, Expression};
 use crate::compiler::compile::Compiler;
+use crate::compiler::expression::{Data, Expression};
 
 pub mod print;
 pub mod assignment;
@@ -23,7 +23,7 @@ pub trait CompilerStatement: DynClone + Debug {
 pub struct Scope {
     pub(crate) _break: bool,
     pub(crate) _exit: bool,
-    pub(crate) _exit_code: i32
+    pub(crate) _exit_code: i32,
 }
 
 impl Scope {
@@ -31,7 +31,7 @@ impl Scope {
         Scope {
             _break: false,
             _exit: false,
-            _exit_code: 0
+            _exit_code: 0,
         }
     }
 }

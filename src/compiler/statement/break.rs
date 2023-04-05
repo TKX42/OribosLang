@@ -1,10 +1,9 @@
-use crate::compiler::statement::{CompilerStatement, Scope};
-use crate::compiler::expression::{Data, Expression};
 use crate::compiler::compile::Compiler;
+use crate::compiler::expression::{Data, Expression};
+use crate::compiler::statement::{CompilerStatement, Scope};
 
 #[derive(Clone, Debug)]
-pub struct BreakStatement {
-}
+pub struct BreakStatement {}
 
 impl CompilerStatement for BreakStatement {
     fn name(&self) -> String {

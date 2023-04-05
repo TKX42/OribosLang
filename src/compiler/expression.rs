@@ -1,7 +1,7 @@
 use std::fmt;
-use crate::compiler::statement::{CompilerStatement, Scope};
 
 use crate::compiler::compile::Compiler;
+use crate::compiler::statement::{CompilerStatement, Scope};
 use crate::operators::Operator;
 
 #[derive(Clone, Debug)]

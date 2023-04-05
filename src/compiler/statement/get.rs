@@ -1,6 +1,6 @@
-use crate::compiler::statement::{CompilerStatement, Scope};
-use crate::compiler::expression::{Data, Expression};
 use crate::compiler::compile::Compiler;
+use crate::compiler::expression::{Data, Expression};
+use crate::compiler::statement::{CompilerStatement, Scope};
 
 #[derive(Clone, Debug)]
 pub struct GetStatement {
@@ -26,6 +26,6 @@ impl CompilerStatement for GetStatement {
     }
 
     fn compile(&self, interpreter: &mut Compiler, _scope: &mut Scope) -> Data {
-        interpreter.memory().get(self.var_id).clone()      // !!! TODO: evaluate clone for runtime performance
+        interpreter.memory().get(self.var_id).clone()
     }
 }

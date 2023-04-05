@@ -1,6 +1,6 @@
-use crate::compiler::statement::{CompilerStatement, Scope};
-use crate::compiler::expression::{Data, evaluate, Expression};
 use crate::compiler::compile::Compiler;
+use crate::compiler::expression::{Data, evaluate, Expression};
+use crate::compiler::statement::{CompilerStatement, Scope};
 
 #[derive(Clone, Debug)]
 pub struct IfStatement {
