@@ -5,16 +5,16 @@ use std::ops::Deref;
 use pest::iterators::Pair;
 use pest::Parser;
 
-use crate::compiler::expression::{Data, DataExpression, Expression, OperationExpression};
-use crate::compiler::statement::assignment::AssignmentStatement;
+use crate::compiler::expression::{DataExpression, Expression, OperationExpression, Operator};
+use crate::compiler::statement::assign_stmt::AssignmentStatement;
 use crate::compiler::statement::CompilerStatement;
-use crate::compiler::statement::exit::ExitStatement;
-use crate::compiler::statement::for_loop::ForLoopStatement;
-use crate::compiler::statement::get::GetStatement;
-use crate::compiler::statement::if_instr::IfStatement;
-use crate::compiler::statement::print::PrintStatement;
-use crate::compiler::statement::r#break::BreakStatement;
-use crate::operators::{Add, Div, Equals, Greater, Lesser, Modulo, Mul, NotEquals, Operator, Sub};
+use crate::compiler::statement::exit_stmt::ExitStatement;
+use crate::compiler::statement::for_loop_stmt::ForLoopStatement;
+use crate::compiler::statement::get_stmt::GetStatement;
+use crate::compiler::statement::if_stmt::IfStatement;
+use crate::compiler::statement::print_stmt::PrintStatement;
+use crate::compiler::statement::break_stmt::BreakStatement;
+use crate::data::Data;
 
 #[derive(Parser)]
 #[grammar = "oriboslang.pest"]
@@ -52,20 +52,21 @@ fn parse_primitive(primitive: Pair<Rule>) -> Expression {
 
 fn parse_operation(operation: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Expression {
     let mut operations: Vec<Expression> = vec![];
-    let mut operators: Vec<Box<dyn Operator>> = vec![];
+    let mut operators: Vec<Operator> = vec![];
 
     for operation_type in operation.into_inner() {
         match operation_type.as_rule() {
+            // TODO implement
             Rule::value => { operations.push(parse_value(operation_type, identifier_table)) }
-            Rule::add => { operators.push(Add::create()) }
-            Rule::sub => { operators.push(Sub::create()) }
-            Rule::mul => { operators.push(Mul::create()) }
-            Rule::div => { operators.push(Div::create()) }
-            Rule::modulo => { operators.push(Modulo::create()) }
-            Rule::equals => { operators.push(Equals::create()) }
-            Rule::not_equals => { operators.push(NotEquals::create()) }
-            Rule::greater => { operators.push(Greater::create()) }
-            Rule::lesser => { operators.push(Lesser::create()) }
+            Rule::add => { operators.push(unimplemented!()) }
+            Rule::sub => { operators.push(unimplemented!()) }
+            Rule::mul => { operators.push(unimplemented!()) }
+            Rule::div => { operators.push(unimplemented!()) }
+            Rule::modulo => { operators.push(unimplemented!()) }
+            Rule::equals => { operators.push(unimplemented!()) }
+            Rule::not_equals => { operators.push(unimplemented!()) }
+            Rule::greater => { operators.push(unimplemented!()) }
+            Rule::lesser => { operators.push(unimplemented!()) }
             _ => { operations.push(parse_operation(operation_type, identifier_table)) }       // operation needs to be further resolved
         }
     }
@@ -73,7 +74,7 @@ fn parse_operation(operation: Pair<Rule>, identifier_table: &mut IdentifierTable
     parse_operations(operations, operators)
 }
 
-fn parse_operations(operations: Vec<Expression>, operators: Vec<Box<dyn Operator>>) -> Expression {
+fn parse_operations(operations: Vec<Expression>, operators: Vec<Operator>) -> Expression {
     if operations.len() == 1 {
         return operations.deref().get(0).cloned().unwrap();
     } else {

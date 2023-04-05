@@ -3,21 +3,22 @@ use std::fmt::Debug;
 use dyn_clone::DynClone;
 
 use crate::compiler::compile::Compiler;
-use crate::compiler::expression::{Data, Expression};
+use crate::compiler::expression::Expression;
+use crate::interpreter::instruction::Instruction;
 
-pub mod print;
-pub mod assignment;
-pub mod get;
-pub mod if_instr;
-pub mod for_loop;
-pub mod exit;
-pub mod r#break;
+pub mod print_stmt;
+pub mod assign_stmt;
+pub mod get_stmt;
+pub mod if_stmt;
+pub mod for_loop_stmt;
+pub mod exit_stmt;
+pub mod break_stmt;
 
 dyn_clone::clone_trait_object!(CompilerStatement);
 pub trait CompilerStatement: DynClone + Debug {
     fn name(&self) -> String;
     fn init(parameters: &[Expression]) -> Box<dyn CompilerStatement> where Self: Sized;
-    fn compile(&self, interpreter: &mut Compiler, scope: &mut Scope) -> Data;
+    fn compile(&self) -> Vec<Box<dyn Instruction>>;
 }
 
 pub struct Scope {

@@ -1,6 +1,9 @@
 use crate::compiler::compile::Compiler;
-use crate::compiler::expression::{Data, evaluate, Expression};
+use crate::compiler::expression::{compile, Expression};
 use crate::compiler::statement::{CompilerStatement, Scope};
+use crate::data::Data;
+use crate::interpreter::instruction::{Instruction};
+use crate::interpreter::instruction::print_instr::PRINT;
 
 #[derive(Clone, Debug)]
 pub struct PrintStatement {
@@ -18,16 +21,10 @@ impl CompilerStatement for PrintStatement {
         })
     }
 
-    fn compile(&self, interpreter: &mut Compiler, scope: &mut Scope) -> Data {
-        print(&evaluate(&self.data, interpreter, scope));
-        Data::Number(0.0)
-    }
-}
-
-fn print(data: &Data) {
-    match data {
-        Data::String(s) => { println!("{s}") }
-        Data::Number(n) => { println!("{n}") }
-        Data::Bool(b) => { println!("{b}") }
+    fn compile(&self) -> Vec<Box<dyn Instruction>> {
+        let mut result = vec![];
+        result.append(&mut compile(&self.data));
+        result.push(PRINT::new(Data::None));
+        result
     }
 }

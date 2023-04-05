@@ -1,6 +1,7 @@
 use crate::compiler::compile::Compiler;
-use crate::compiler::expression::{Data, Expression};
+use crate::compiler::expression::{ Expression};
 use crate::compiler::statement::{CompilerStatement, Scope};
+use crate::interpreter::instruction::Instruction;
 
 #[derive(Clone, Debug)]
 pub struct BreakStatement {}
@@ -14,8 +15,7 @@ impl CompilerStatement for BreakStatement {
         Box::new(BreakStatement {})
     }
 
-    fn compile(&self, _interpreter: &mut Compiler, scope: &mut Scope) -> Data {
-        scope._break = true;
-        Data::Number(0.0)
+    fn compile(&self) -> Vec<Box<dyn Instruction>> {
+        unimplemented!()
     }
 }

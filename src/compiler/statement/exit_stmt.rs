@@ -1,6 +1,7 @@
 use crate::compiler::compile::Compiler;
-use crate::compiler::expression::{Data, evaluate, Expression, get_number};
+use crate::compiler::expression::{ compile, Expression, get_number};
 use crate::compiler::statement::{CompilerStatement, Scope};
+use crate::interpreter::instruction::Instruction;
 
 #[derive(Clone, Debug)]
 pub struct ExitStatement {
@@ -18,10 +19,7 @@ impl CompilerStatement for ExitStatement {
         })
     }
 
-    fn compile(&self, interpreter: &mut Compiler, scope: &mut Scope) -> Data {
-        let exit_code = &evaluate(&self.data, interpreter, scope);
-        scope._exit = true;
-        scope._exit_code = get_number(exit_code) as i32;
-        Data::Number(0.0)
+    fn compile(&self) -> Vec<Box<dyn Instruction>> {
+        unimplemented!()
     }
 }

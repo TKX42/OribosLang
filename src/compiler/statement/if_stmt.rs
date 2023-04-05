@@ -1,6 +1,7 @@
 use crate::compiler::compile::Compiler;
-use crate::compiler::expression::{Data, evaluate, Expression};
+use crate::compiler::expression::{compile, Expression};
 use crate::compiler::statement::{CompilerStatement, Scope};
+use crate::interpreter::instruction::Instruction;
 
 #[derive(Clone, Debug)]
 pub struct IfStatement {
@@ -29,20 +30,7 @@ impl CompilerStatement for IfStatement {
         unreachable!()
     }
 
-    fn compile(&self, interpreter: &mut Compiler, scope: &mut Scope) -> Data {
-        let check = evaluate(&self.comparison, interpreter, scope);
-        match check {
-            Data::String(_) => { panic!("Error: Invalid type 'string' given as expression for if statement") }
-            Data::Number(_) => { panic!("Error: Invalid type 'number' given as expression for if statement") }
-            Data::Bool(b) => {
-                if b {
-                    interpreter.compile_statements(&self.true_statements, scope);
-                } else {
-                    interpreter.compile_statements(&self.else_statements, scope);
-                }
-            }
-        }
-
-        Data::Number(0.0)
+    fn compile(&self) -> Vec<Box<dyn Instruction>> {
+        unimplemented!()
     }
 }
