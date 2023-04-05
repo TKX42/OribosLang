@@ -5,16 +5,16 @@ use crate::interpreter::instruction::Instruction;
 
 #[derive(Clone, Debug)]
 pub struct ForLoopStatement {
-    counter_var_id: i64,
+    counter_var_address: usize,
     start_i: Expression,
     end_i: Expression,
     statements: Vec<Box<dyn CompilerStatement>>,
 }
 
 impl ForLoopStatement {
-    pub fn create(counter_var_id: i64, start_i: Expression, end_i: Expression, statements: Vec<Box<dyn CompilerStatement>>) -> Box<dyn CompilerStatement> {
+    pub fn create(counter_var_address: usize, start_i: Expression, end_i: Expression, statements: Vec<Box<dyn CompilerStatement>>) -> Box<dyn CompilerStatement> {
         Box::new(ForLoopStatement {
-            counter_var_id,
+            counter_var_address,
             start_i,
             end_i,
             statements,

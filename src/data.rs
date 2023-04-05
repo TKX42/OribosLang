@@ -5,8 +5,9 @@ pub enum Data {
     String(String),
     Number(f64),
     Bool(bool),
-    Address(i64),
-    None
+    MemoryAddress(usize),
+    JumpAddress(isize),
+    None,
 }
 
 impl fmt::Display for Data {

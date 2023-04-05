@@ -1,5 +1,5 @@
 use crate::compiler::compile::Compiler;
-use crate::compiler::expression::{ compile, Expression, get_number};
+use crate::compiler::expression::{compile, Expression, get_number};
 use crate::compiler::statement::{CompilerStatement, Scope};
 use crate::interpreter::instruction::Instruction;
 

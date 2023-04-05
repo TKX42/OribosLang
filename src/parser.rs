@@ -7,13 +7,13 @@ use pest::Parser;
 
 use crate::compiler::expression::{DataExpression, Expression, OperationExpression, Operator};
 use crate::compiler::statement::assign_stmt::AssignmentStatement;
+use crate::compiler::statement::break_stmt::BreakStatement;
 use crate::compiler::statement::CompilerStatement;
 use crate::compiler::statement::exit_stmt::ExitStatement;
 use crate::compiler::statement::for_loop_stmt::ForLoopStatement;
 use crate::compiler::statement::get_stmt::GetStatement;
 use crate::compiler::statement::if_stmt::IfStatement;
 use crate::compiler::statement::print_stmt::PrintStatement;
-use crate::compiler::statement::break_stmt::BreakStatement;
 use crate::data::Data;
 
 #[derive(Parser)]
@@ -21,8 +21,8 @@ use crate::data::Data;
 pub struct OribosParser;
 
 struct IdentifierTable {
-    i: i64,
-    identifier: HashMap<String, i64>,
+    i: usize,
+    identifier: HashMap<String, usize>,
 }
 
 fn get_string(s: &str) -> Data {
@@ -58,13 +58,13 @@ fn parse_operation(operation: Pair<Rule>, identifier_table: &mut IdentifierTable
         match operation_type.as_rule() {
             // TODO implement
             Rule::value => { operations.push(parse_value(operation_type, identifier_table)) }
-            Rule::add => { operators.push(unimplemented!()) }
-            Rule::sub => { operators.push(unimplemented!()) }
-            Rule::mul => { operators.push(unimplemented!()) }
-            Rule::div => { operators.push(unimplemented!()) }
+            Rule::add => { operators.push(Operator::add) }
+            Rule::sub => { operators.push(Operator::sub) }
+            Rule::mul => { operators.push(Operator::mul) }
+            Rule::div => { operators.push(Operator::div) }
             Rule::modulo => { operators.push(unimplemented!()) }
-            Rule::equals => { operators.push(unimplemented!()) }
-            Rule::not_equals => { operators.push(unimplemented!()) }
+            Rule::equals => { operators.push(Operator::eq) }
+            Rule::not_equals => { operators.push(Operator::neq) }
             Rule::greater => { operators.push(unimplemented!()) }
             Rule::lesser => { operators.push(unimplemented!()) }
             _ => { operations.push(parse_operation(operation_type, identifier_table)) }       // operation needs to be further resolved
@@ -161,7 +161,7 @@ fn parse_assignment(assignment: Pair<Rule>, identifier_table: &mut IdentifierTab
     AssignmentStatement::create(get_var_id(var_name, identifier_table), var_expression)
 }
 
-fn get_var_id(var_name: String, identifier_table: &mut IdentifierTable) -> i64 {
+fn get_var_id(var_name: String, identifier_table: &mut IdentifierTable) -> usize {
     return match identifier_table.identifier.get(&*var_name) {
         None => {
             identifier_table.i += 1;
@@ -190,7 +190,7 @@ fn parse_if_expr(if_expr: Pair<Rule>, identifier_table: &mut IdentifierTable) ->
 }
 
 fn parse_for_loop(for_loop: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn CompilerStatement> {
-    let mut counter_var_id = -1;
+    let mut counter_var_id = 0;
     let mut start_i = Expression::Data(DataExpression::empty());
     let mut end_i = Expression::Data(DataExpression::empty());
     let mut statements = vec![];

@@ -2,7 +2,7 @@ use crate::compiler::compile::Compiler;
 use crate::compiler::expression::{compile, Expression};
 use crate::compiler::statement::{CompilerStatement, Scope};
 use crate::data::Data;
-use crate::interpreter::instruction::{Instruction};
+use crate::interpreter::instruction::Instruction;
 use crate::interpreter::instruction::print_instr::PRINT;
 
 #[derive(Clone, Debug)]

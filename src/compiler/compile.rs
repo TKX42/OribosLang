@@ -17,18 +17,19 @@ impl Compiler {
     }
 
     pub fn compile(&mut self) -> Vec<Box<dyn Instruction>> {
-        self.compile_statements(&self.ast.clone())
+        compile_statements(&self.ast.clone())
     }
+}
 
-    pub fn compile_statements(&mut self, statements: &[Box<dyn CompilerStatement>]) -> Vec<Box<dyn Instruction>> {
-        let mut result = vec![];
-        for instr in statements {
-            result.append(&mut self.compile_statement(instr));
-        }
-        result
-    }
 
-    pub fn compile_statement(&mut self, statement: &Box<dyn CompilerStatement>) -> Vec<Box<dyn Instruction>> {
-        statement.compile()
+pub fn compile_statements(statements: &[Box<dyn CompilerStatement>]) -> Vec<Box<dyn Instruction>> {
+    let mut result = vec![];
+    for instr in statements {
+        result.append(&mut compile_statement(instr));
     }
+    result
+}
+
+pub fn compile_statement(statement: &Box<dyn CompilerStatement>) -> Vec<Box<dyn Instruction>> {
+    statement.compile()
 }

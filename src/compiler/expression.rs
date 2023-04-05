@@ -5,6 +5,7 @@ use crate::compiler::statement::{CompilerStatement, Scope};
 use crate::data::Data;
 use crate::interpreter::instruction::const_instr::CONST;
 use crate::interpreter::instruction::Instruction;
+use crate::interpreter::instruction::operator_instr::{ADD, EQ};
 
 #[derive(Clone, Debug)]
 pub enum Expression {
@@ -42,7 +43,7 @@ pub enum Operator {
     div,
     eq,
     neq,
-    neg
+    neg,
 }
 
 #[derive(Clone, Debug)]
@@ -65,8 +66,16 @@ impl OperationExpression {
         let mut result = vec![];
         result.append(&mut compile(&self.left));
         result.append(&mut compile(&self.right));
-        result.append(unimplemented!());    // TODO add operator
+        result.push(compile_operator(&self.operator));
         result
+    }
+}
+
+fn compile_operator(operator: &Operator) -> Box<dyn Instruction> {
+    match operator {
+        Operator::add => { ADD::new(Data::None) }
+        Operator::eq => { EQ::new(Data::None) }
+        _ => { unimplemented!() }     // TODO: implement
     }
 }
 
@@ -85,9 +94,23 @@ pub fn get_number(data: &Data) -> f64 {
     }
 }
 
-pub fn get_address(data: &Data) -> i64 {
+pub fn get_memory_address(data: &Data) -> usize {
     match data {
-        Data::Address(a) => { *a }
-        _ => { panic!("Error: Invalid address data type") }
+        Data::MemoryAddress(a) => { *a }
+        _ => { panic!("Error: Invalid memory address data type") }
+    }
+}
+
+pub fn get_jump_address(data: &Data) -> isize {
+    match data {
+        Data::JumpAddress(a) => { *a }
+        _ => { panic!("Error: Invalid jump address data type") }
+    }
+}
+
+pub fn get_bool(data: &Data) -> bool {
+    match data {
+        Data::Bool(b) => { *b }
+        x => { panic!("Error: Expected boolean, got {:?}", x) }
     }
 }
