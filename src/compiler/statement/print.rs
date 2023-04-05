@@ -1,24 +1,24 @@
-use crate::expression::{Data, evaluate, Expression};
-use crate::instruction::{ExecutableInstruction, Scope};
-use crate::interpreter::Interpreter;
+use crate::compiler::statement::{CompilerStatement, Scope};
+use crate::compiler::expression::{Data, evaluate, Expression};
+use crate::compiler::compile::Compiler;
 
 #[derive(Clone, Debug)]
-pub struct PrintInstruction {
+pub struct PrintStatement {
     data: Expression,
 }
 
-impl ExecutableInstruction for PrintInstruction {
+impl CompilerStatement for PrintStatement {
     fn name(&self) -> String {
         String::from("print")
     }
 
-    fn init(parameters: &[Expression]) -> Box<dyn ExecutableInstruction> {
-        Box::new(PrintInstruction {
+    fn init(parameters: &[Expression]) -> Box<dyn CompilerStatement> {
+        Box::new(PrintStatement {
             data: parameters.get(0).expect("Invalid parameter for Print").clone(),
         })
     }
 
-    fn exec(&self, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+    fn compile(&self, interpreter: &mut Compiler, scope: &mut Scope) -> Data {
         print(&evaluate(&self.data, interpreter, scope));
         Data::Number(0.0)
     }

@@ -1,7 +1,7 @@
 use std::fmt;
+use crate::compiler::statement::{CompilerStatement, Scope};
 
-use crate::instruction::{ExecutableInstruction, Scope};
-use crate::interpreter::Interpreter;
+use crate::compiler::compile::Compiler;
 use crate::operators::Operator;
 
 #[derive(Clone, Debug)]
@@ -20,7 +20,7 @@ impl fmt::Display for Data {
 #[derive(Clone, Debug)]
 pub enum Expression {
     Data(DataExpression),
-    ExecutableInstruction(Box<dyn ExecutableInstruction>),
+    ExecutableInstruction(Box<dyn CompilerStatement>),
     Operation(Box<OperationExpression>),
 }
 
@@ -61,15 +61,15 @@ impl OperationExpression {
         }
     }
 
-    pub fn evaluate(&self, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+    pub fn evaluate(&self, interpreter: &mut Compiler, scope: &mut Scope) -> Data {
         self.operator.evaluate(&self.left, &self.right, interpreter, scope)
     }
 }
 
-pub fn evaluate(expression: &Expression, interpreter: &mut Interpreter, scope: &mut Scope) -> Data {
+pub fn evaluate(expression: &Expression, interpreter: &mut Compiler, scope: &mut Scope) -> Data {
     match expression {
         Expression::Data(dexpr) => { dexpr.evaluate().clone() }
-        Expression::ExecutableInstruction(instr) => { instr.exec(interpreter, scope) }
+        Expression::ExecutableInstruction(instr) => { instr.compile(interpreter, scope) }
         Expression::Operation(opexpr) => { opexpr.evaluate(interpreter, scope) }
     }
 }

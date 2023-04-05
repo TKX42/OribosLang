@@ -4,17 +4,16 @@ use std::ops::Deref;
 
 use pest::iterators::Pair;
 use pest::Parser;
+use crate::compiler::statement::assignment::AssignmentStatement;
+use crate::compiler::statement::CompilerStatement;
+use crate::compiler::statement::exit::ExitStatement;
+use crate::compiler::statement::for_loop::ForLoopStatement;
+use crate::compiler::statement::get::GetStatement;
+use crate::compiler::statement::if_instr::IfStatement;
+use crate::compiler::statement::print::PrintStatement;
+use crate::compiler::statement::r#break::BreakStatement;
 
-use crate::expression::{Data, DataExpression, Expression, OperationExpression};
-use crate::instruction::assignment::AssignmentInstruction;
-use crate::instruction::ExecutableInstruction;
-use crate::instruction::exit::ExitInstruction;
-use crate::instruction::for_loop::ForLoopInstruction;
-use crate::instruction::get::GetInstruction;
-use crate::instruction::if_instr::IfInstruction;
-use crate::instruction::print::PrintInstruction;
-use crate::instruction::r#break::BreakInstruction;
-use crate::instruction::time::TimeInstruction;
+use crate::compiler::expression::{Data, DataExpression, Expression, OperationExpression};
 use crate::operators::{Add, Div, Equals, Greater, Lesser, Modulo, Mul, NotEquals, Operator, Sub};
 
 #[derive(Parser)]
@@ -103,9 +102,9 @@ fn parse_expression(expression: Pair<Rule>, identifier_table: &mut IdentifierTab
     Expression::Data(DataExpression::empty())
 }
 
-fn parse_variable_get(variable: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
+fn parse_variable_get(variable: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn CompilerStatement> {
     let var_id = get_var_id(variable.as_str().to_string(), identifier_table);
-    GetInstruction::create(var_id)
+    GetStatement::create(var_id)
 }
 
 fn parse_instr_parameters(parameters: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Vec<Expression> {
@@ -123,7 +122,7 @@ fn parse_instr_parameters(parameters: Pair<Rule>, identifier_table: &mut Identif
     result
 }
 
-fn parse_instr(instr: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
+fn parse_instr(instr: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn CompilerStatement> {
     let mut instr_name = String::new();
     let mut instr_parameters = vec![];
     for field in instr.into_inner() {
@@ -137,17 +136,16 @@ fn parse_instr(instr: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box
     create_instruction(instr_name, instr_parameters)
 }
 
-fn create_instruction(instr_name: String, instr_parameters: Vec<Expression>) -> Box<dyn ExecutableInstruction> {
+fn create_instruction(instr_name: String, instr_parameters: Vec<Expression>) -> Box<dyn CompilerStatement> {
     match instr_name.as_str() {
-        "print" => PrintInstruction::init(&instr_parameters),
-        "time" => TimeInstruction::init(&instr_parameters),
-        "exit" => ExitInstruction::init(&instr_parameters),
-        "break" => BreakInstruction::init(&instr_parameters),
-        _ => { panic!("Error: Unknown instruction '{instr_name}'") }
+        "print" => PrintStatement::init(&instr_parameters),
+        "exit" => ExitStatement::init(&instr_parameters),
+        "break" => BreakStatement::init(&instr_parameters),
+        _ => { panic!("Error: Unknown statement '{instr_name}'") }
     }
 }
 
-fn parse_assignment(assignment: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
+fn parse_assignment(assignment: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn CompilerStatement> {
     let mut var_name = String::new();
     let mut var_expression = Expression::Data(DataExpression::empty());
 
@@ -159,7 +157,7 @@ fn parse_assignment(assignment: Pair<Rule>, identifier_table: &mut IdentifierTab
         }
     }
 
-    AssignmentInstruction::create(get_var_id(var_name, identifier_table), var_expression)
+    AssignmentStatement::create(get_var_id(var_name, identifier_table), var_expression)
 }
 
 fn get_var_id(var_name: String, identifier_table: &mut IdentifierTable) -> i64 {
@@ -173,7 +171,7 @@ fn get_var_id(var_name: String, identifier_table: &mut IdentifierTable) -> i64 {
     };
 }
 
-fn parse_if_expr(if_expr: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
+fn parse_if_expr(if_expr: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn CompilerStatement> {
     let mut comparison = Expression::Data(DataExpression::empty());
     let mut true_statements = vec![];
     let mut else_statements = vec![];
@@ -187,10 +185,10 @@ fn parse_if_expr(if_expr: Pair<Rule>, identifier_table: &mut IdentifierTable) ->
         }
     }
 
-    IfInstruction::create(comparison, true_statements, else_statements)
+    IfStatement::create(comparison, true_statements, else_statements)
 }
 
-fn parse_for_loop(for_loop: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
+fn parse_for_loop(for_loop: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn CompilerStatement> {
     let mut counter_var_id = -1;
     let mut start_i = Expression::Data(DataExpression::empty());
     let mut end_i = Expression::Data(DataExpression::empty());
@@ -206,10 +204,10 @@ fn parse_for_loop(for_loop: Pair<Rule>, identifier_table: &mut IdentifierTable) 
         }
     }
 
-    ForLoopInstruction::create(counter_var_id, start_i, end_i, statements)
+    ForLoopStatement::create(counter_var_id, start_i, end_i, statements)
 }
 
-fn parse_statement(statement: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn ExecutableInstruction> {
+fn parse_statement(statement: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn CompilerStatement> {
     for statement_type in statement.into_inner() {
         match statement_type.as_rule() {
             Rule::instr => { return parse_instr(statement_type, identifier_table); }
@@ -223,14 +221,14 @@ fn parse_statement(statement: Pair<Rule>, identifier_table: &mut IdentifierTable
     panic!("Error: Could not parse statement")
 }
 
-pub fn parse(code_str: &str) -> Vec<Box<dyn ExecutableInstruction>> {
+pub fn parse(code_str: &str) -> Vec<Box<dyn CompilerStatement>> {
     let mut identifier_table = IdentifierTable { i: 0, identifier: Default::default() };
 
     let code = OribosParser::parse(Rule::code, code_str).unwrap_or_else(|e| panic!("{}", e)).next().expect("Error parsing");
     parse_statements(&mut identifier_table, code)
 }
 
-fn parse_statements(identifier_table: &mut IdentifierTable, statements: Pair<Rule>) -> Vec<Box<dyn ExecutableInstruction>> {
+fn parse_statements(identifier_table: &mut IdentifierTable, statements: Pair<Rule>) -> Vec<Box<dyn CompilerStatement>> {
     let mut result = vec![];
     for statement in statements.into_inner() {
         match statement.as_rule() {

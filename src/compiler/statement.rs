@@ -2,11 +2,10 @@ use std::fmt::Debug;
 
 use dyn_clone::DynClone;
 
-use crate::expression::{Data, Expression};
-use crate::interpreter::Interpreter;
+use crate::compiler::expression::{Data, Expression};
+use crate::compiler::compile::Compiler;
 
 pub mod print;
-pub mod time;
 pub mod assignment;
 pub mod get;
 pub mod if_instr;
@@ -14,11 +13,11 @@ pub mod for_loop;
 pub mod exit;
 pub mod r#break;
 
-dyn_clone::clone_trait_object!(ExecutableInstruction);
-pub trait ExecutableInstruction: DynClone + Debug {
+dyn_clone::clone_trait_object!(CompilerStatement);
+pub trait CompilerStatement: DynClone + Debug {
     fn name(&self) -> String;
-    fn init(parameters: &[Expression]) -> Box<dyn ExecutableInstruction> where Self: Sized;
-    fn exec(&self, interpreter: &mut Interpreter, scope: &mut Scope) -> Data;
+    fn init(parameters: &[Expression]) -> Box<dyn CompilerStatement> where Self: Sized;
+    fn compile(&self, interpreter: &mut Compiler, scope: &mut Scope) -> Data;
 }
 
 pub struct Scope {

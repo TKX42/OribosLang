@@ -1,4 +1,4 @@
-use crate::expression::Data;
+use crate::compiler::expression::Data;
 
 #[derive(Debug)]
 pub struct Memory {
