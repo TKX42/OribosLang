@@ -2,7 +2,6 @@ use std::fmt::Debug;
 
 use dyn_clone::DynClone;
 
-use crate::compiler::compile::Compiler;
 use crate::compiler::expression::Expression;
 use crate::interpreter::instruction::Instruction;
 

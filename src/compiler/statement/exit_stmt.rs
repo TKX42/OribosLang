@@ -1,11 +1,10 @@
-use crate::compiler::compile::Compiler;
-use crate::compiler::expression::{compile, Expression, get_number};
-use crate::compiler::statement::{CompilerStatement, Scope};
+use crate::compiler::expression::Expression;
+use crate::compiler::statement::CompilerStatement;
 use crate::interpreter::instruction::Instruction;
 
 #[derive(Clone, Debug)]
 pub struct ExitStatement {
-    data: Expression,
+    exit_code: Expression,
 }
 
 impl CompilerStatement for ExitStatement {
@@ -15,7 +14,7 @@ impl CompilerStatement for ExitStatement {
 
     fn init(parameters: &[Expression]) -> Box<dyn CompilerStatement> {
         Box::new(ExitStatement {
-            data: parameters.get(0).expect("Invalid parameter for Exit").clone(),
+            exit_code: parameters.get(0).expect("Invalid parameter for Exit").clone(),
         })
     }
 

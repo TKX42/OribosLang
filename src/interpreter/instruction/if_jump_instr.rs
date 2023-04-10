@@ -10,7 +10,7 @@ pub struct IFJUMP {
 
 impl Instruction for IFJUMP {
     fn new(parameter: Data) -> Box<dyn Instruction> {
-        Box::new(IFJUMP { instr_pointer: get_jump_address(&parameter) as isize })
+        Box::new(IFJUMP { instr_pointer: get_jump_address(&parameter) })
     }
 
     fn exec(&self, stack: &mut Vec<Data>, _memory: &mut Memory, instr_pointer: usize) -> usize {

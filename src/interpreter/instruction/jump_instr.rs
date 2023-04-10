@@ -1,4 +1,4 @@
-use crate::compiler::expression::{get_jump_address, get_number};
+use crate::compiler::expression::get_jump_address;
 use crate::data::Data;
 use crate::interpreter::instruction::Instruction;
 use crate::memory::Memory;
@@ -10,7 +10,7 @@ pub struct JUMP {
 
 impl Instruction for JUMP {
     fn new(parameter: Data) -> Box<dyn Instruction> {
-        Box::new(JUMP { instr_pointer: get_jump_address(&parameter) as isize })
+        Box::new(JUMP { instr_pointer: get_jump_address(&parameter) })
     }
 
     fn exec(&self, _stack: &mut Vec<Data>, _memory: &mut Memory, instr_pointer: usize) -> usize {

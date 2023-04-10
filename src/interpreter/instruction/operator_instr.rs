@@ -9,7 +9,7 @@ pub struct ADD {
 
 impl Instruction for ADD {
     fn new(_parameter: Data) -> Box<dyn Instruction> {
-        Box::new(ADD { name: "add".to_string() })
+        Box::new(ADD { name: "Add".to_string() })
     }
 
     fn exec(&self, stack: &mut Vec<Data>, _memory: &mut Memory, instr_pointer: usize) -> usize {
@@ -75,7 +75,7 @@ pub struct LESS {
 
 impl Instruction for LESS {
     fn new(_parameter: Data) -> Box<dyn Instruction> {
-        Box::new(LESS { name: "less".to_string() })
+        Box::new(LESS { name: "Less".to_string() })
     }
 
     fn exec(&self, stack: &mut Vec<Data>, _memory: &mut Memory, instr_pointer: usize) -> usize {
@@ -114,7 +114,7 @@ pub struct MODULO {
 
 impl Instruction for MODULO {
     fn new(_parameter: Data) -> Box<dyn Instruction> {
-        Box::new(MODULO { name: "modulo".to_string() })
+        Box::new(MODULO { name: "Modulo".to_string() })
     }
 
     fn exec(&self, stack: &mut Vec<Data>, _memory: &mut Memory, instr_pointer: usize) -> usize {

@@ -1,9 +1,7 @@
-use crate::compiler::compile::Compiler;
 use crate::compiler::expression::{compile, Expression};
-use crate::compiler::statement::{CompilerStatement, Scope};
+use crate::compiler::statement::CompilerStatement;
 use crate::data::Data;
 use crate::interpreter::instruction::assign_instr::ASSIGN;
-use crate::interpreter::instruction::const_instr::CONST;
 use crate::interpreter::instruction::Instruction;
 
 #[derive(Clone, Debug)]

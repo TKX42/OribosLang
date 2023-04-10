@@ -6,7 +6,7 @@ use crate::memory::Memory;
 pub struct PRINT {}
 
 impl Instruction for PRINT {
-    fn new(parameter: Data) -> Box<dyn Instruction> {
+    fn new(_parameter: Data) -> Box<dyn Instruction> {
         Box::new(PRINT {})
     }
 

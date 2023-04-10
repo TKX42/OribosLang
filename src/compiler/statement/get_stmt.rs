@@ -1,6 +1,5 @@
-use crate::compiler::compile::Compiler;
 use crate::compiler::expression::Expression;
-use crate::compiler::statement::{CompilerStatement, Scope};
+use crate::compiler::statement::CompilerStatement;
 use crate::data::Data;
 use crate::interpreter::instruction::get_instr::GET;
 use crate::interpreter::instruction::Instruction;

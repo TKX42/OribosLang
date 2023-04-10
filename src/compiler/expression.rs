@@ -1,7 +1,4 @@
-use std::fmt;
-
-use crate::compiler::compile::Compiler;
-use crate::compiler::statement::{CompilerStatement, Scope};
+use crate::compiler::statement::CompilerStatement;
 use crate::data::Data;
 use crate::interpreter::instruction::const_instr::CONST;
 use crate::interpreter::instruction::Instruction;
@@ -37,16 +34,16 @@ impl DataExpression {
 
 #[derive(Clone, Debug)]
 pub enum Operator {
-    add,
-    sub,
-    mul,
-    div,
-    eq,
-    neq,
-    neg,
-    modulo,
-    less,
-    greater,
+    Add,
+    Sub,
+    Mul,
+    Div,
+    Eq,
+    Neq,
+    Neg,
+    Modulo,
+    Less,
+    Greater,
 }
 
 #[derive(Clone, Debug)]
@@ -76,10 +73,10 @@ impl OperationExpression {
 
 fn compile_operator(operator: &Operator) -> Box<dyn Instruction> {
     match operator {
-        Operator::add => { ADD::new(Data::None) }
-        Operator::eq => { EQ::new(Data::None) }
-        Operator::less => { LESS::new(Data::None) }
-        Operator::modulo => { MODULO::new(Data::None) }
+        Operator::Add => { ADD::new(Data::None) }
+        Operator::Eq => { EQ::new(Data::None) }
+        Operator::Less => { LESS::new(Data::None) }
+        Operator::Modulo => { MODULO::new(Data::None) }
         _ => { unimplemented!() }     // TODO: implement
     }
 }
@@ -116,6 +113,6 @@ pub fn get_jump_address(data: &Data) -> isize {
 pub fn get_bool(data: &Data) -> bool {
     match data {
         Data::Bool(b) => { *b }
-        x => { panic!("Error: Expected boolean, got {:?}", x) }
+        x => { panic!("Error: Expected boolean, got {x:?}") }
     }
 }

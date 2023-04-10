@@ -1,8 +1,5 @@
-use std::process;
-
-use crate::compiler::statement::{CompilerStatement, Scope};
+use crate::compiler::statement::CompilerStatement;
 use crate::interpreter::instruction::Instruction;
-use crate::memory::Memory;
 
 #[derive(Debug)]
 pub struct Compiler {

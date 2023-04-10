@@ -58,13 +58,13 @@ fn parse_operation(operation: Pair<Rule>, identifier_table: &mut IdentifierTable
         match operation_type.as_rule() {
             // TODO implement
             Rule::value => { operations.push(parse_value(operation_type, identifier_table)) }
-            Rule::add => { operators.push(Operator::add) }
-            Rule::sub => { operators.push(Operator::sub) }
-            Rule::mul => { operators.push(Operator::mul) }
-            Rule::div => { operators.push(Operator::div) }
-            Rule::modulo => { operators.push(Operator::modulo) }
-            Rule::equals => { operators.push(Operator::eq) }
-            Rule::not_equals => { operators.push(Operator::neq) }
+            Rule::add => { operators.push(Operator::Add) }
+            Rule::sub => { operators.push(Operator::Sub) }
+            Rule::mul => { operators.push(Operator::Mul) }
+            Rule::div => { operators.push(Operator::Div) }
+            Rule::modulo => { operators.push(Operator::Modulo) }
+            Rule::equals => { operators.push(Operator::Eq) }
+            Rule::not_equals => { operators.push(Operator::Neq) }
             Rule::greater => { operators.push(unimplemented!()) }
             Rule::lesser => { operators.push(unimplemented!()) }
             _ => { operations.push(parse_operation(operation_type, identifier_table)) }       // operation needs to be further resolved

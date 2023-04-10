@@ -1,6 +1,6 @@
-use crate::compiler::compile::{compile_statements, Compiler};
-use crate::compiler::expression::{compile, Expression, get_number, OperationExpression, Operator};
-use crate::compiler::statement::{CompilerStatement, Scope};
+use crate::compiler::compile::compile_statements;
+use crate::compiler::expression::{Expression, OperationExpression, Operator};
+use crate::compiler::statement::CompilerStatement;
 use crate::compiler::statement::assign_stmt::AssignmentStatement;
 use crate::compiler::statement::get_stmt::GetStatement;
 use crate::data::Data;
@@ -57,11 +57,11 @@ impl CompilerStatement for ForLoopStatement {
         result.append(&mut OperationExpression::new(
             Expression::Statement(GetStatement::create(self.counter_var_address)),
             self.end_i.clone(),
-            Operator::less
+            Operator::Less,
         ).compile());
 
-        // if counter is less than end -> jump back to the beginning of the loop statements
-        result.push(IFJUMP::new(JumpAddress(-((result.len()-2)
+        // if counter is Less than end -> jump back to the beginning of the loop statements
+        result.push(IFJUMP::new(JumpAddress(-((result.len() - 2)
             as isize))));
 
         result

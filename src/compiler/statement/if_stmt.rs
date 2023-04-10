@@ -1,6 +1,6 @@
-use crate::compiler::compile::{compile_statements, Compiler};
+use crate::compiler::compile::compile_statements;
 use crate::compiler::expression::{compile, Expression};
-use crate::compiler::statement::{CompilerStatement, Scope};
+use crate::compiler::statement::CompilerStatement;
 use crate::data::Data;
 use crate::interpreter::instruction::if_jump_instr::IFJUMP;
 use crate::interpreter::instruction::Instruction;
