@@ -5,7 +5,7 @@ use crate::interpreter::instruction::Instruction;
 use crate::memory::Memory;
 
 #[derive(Debug)]
-pub struct Interpreter {
+pub struct VM {
     instructions: Vec<Box<dyn Instruction>>,
     memory: Memory,
     stack: Vec<Data>,
@@ -13,9 +13,9 @@ pub struct Interpreter {
     exit_code: i64,
 }
 
-impl Interpreter {
-    pub fn new(ast: Vec<Box<dyn Instruction>>) -> Interpreter {
-        Interpreter {
+impl VM {
+    pub fn new(ast: Vec<Box<dyn Instruction>>) -> VM {
+        VM {
             instructions: ast,
             memory: Memory::new(),
             stack: vec![],

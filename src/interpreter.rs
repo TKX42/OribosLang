@@ -1,2 +1,2 @@
 pub mod instruction;
-pub mod interpret;
+pub mod vm;
