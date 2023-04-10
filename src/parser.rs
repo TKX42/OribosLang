@@ -62,7 +62,7 @@ fn parse_operation(operation: Pair<Rule>, identifier_table: &mut IdentifierTable
             Rule::sub => { operators.push(Operator::sub) }
             Rule::mul => { operators.push(Operator::mul) }
             Rule::div => { operators.push(Operator::div) }
-            Rule::modulo => { operators.push(unimplemented!()) }
+            Rule::modulo => { operators.push(Operator::modulo) }
             Rule::equals => { operators.push(Operator::eq) }
             Rule::not_equals => { operators.push(Operator::neq) }
             Rule::greater => { operators.push(unimplemented!()) }
@@ -93,9 +93,9 @@ fn parse_expression(expression: Pair<Rule>, identifier_table: &mut IdentifierTab
     for expression_type in expression.into_inner() {
         match expression_type.as_rule() {
             Rule::primitive => { return parse_primitive(expression_type); }
-            Rule::instr => { return Expression::ExecutableInstruction(parse_instr(expression_type, identifier_table)); }
+            Rule::instr => { return Expression::Statement(parse_instr(expression_type, identifier_table)); }
             Rule::operation => { return parse_operation(expression_type, identifier_table); }
-            Rule::variable => { return Expression::ExecutableInstruction(parse_variable_get(expression_type, identifier_table)); }       // print(x) -> "x" will be converted into print(get(x))
+            Rule::variable => { return Expression::Statement(parse_variable_get(expression_type, identifier_table)); }       // print(x) -> "x" will be converted into print(get(x))
             _ => unreachable!()
         }
     }

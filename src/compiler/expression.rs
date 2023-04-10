@@ -5,12 +5,12 @@ use crate::compiler::statement::{CompilerStatement, Scope};
 use crate::data::Data;
 use crate::interpreter::instruction::const_instr::CONST;
 use crate::interpreter::instruction::Instruction;
-use crate::interpreter::instruction::operator_instr::{ADD, EQ};
+use crate::interpreter::instruction::operator_instr::{ADD, EQ, LESS, MODULO};
 
 #[derive(Clone, Debug)]
 pub enum Expression {
     Data(DataExpression),
-    ExecutableInstruction(Box<dyn CompilerStatement>),
+    Statement(Box<dyn CompilerStatement>),
     Operation(Box<OperationExpression>),
 }
 
@@ -44,6 +44,9 @@ pub enum Operator {
     eq,
     neq,
     neg,
+    modulo,
+    less,
+    greater,
 }
 
 #[derive(Clone, Debug)]
@@ -75,6 +78,8 @@ fn compile_operator(operator: &Operator) -> Box<dyn Instruction> {
     match operator {
         Operator::add => { ADD::new(Data::None) }
         Operator::eq => { EQ::new(Data::None) }
+        Operator::less => { LESS::new(Data::None) }
+        Operator::modulo => { MODULO::new(Data::None) }
         _ => { unimplemented!() }     // TODO: implement
     }
 }
@@ -82,7 +87,7 @@ fn compile_operator(operator: &Operator) -> Box<dyn Instruction> {
 pub fn compile(expression: &Expression) -> Vec<Box<dyn Instruction>> {
     match expression {
         Expression::Data(dexpr) => { vec![CONST::new(dexpr.data.clone())] }
-        Expression::ExecutableInstruction(instr) => { instr.compile() }
+        Expression::Statement(instr) => { instr.compile() }
         Expression::Operation(opexpr) => { opexpr.compile() }
     }
 }

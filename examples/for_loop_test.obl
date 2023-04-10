@@ -1,0 +1,7 @@
+print("starting");
+
+for(i,0,10){
+    print(i);
+};
+
+print("the end");

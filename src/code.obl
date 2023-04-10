@@ -1,10 +1,2 @@
-x = false;
-if(x==true){
-    print("true 1");
-    print("true 2");
-}else {
-    print("else 1");
-    print("else 2");
-};
-print("after if statement");
-print("the end");
+x = 5+2%3;
+print(x);
