@@ -1,6 +1,6 @@
 code = { SOI ~ (statement | CRLF)* ~ EOI }
 
-statement = { (if_expr | for_expr | instr | assignment) ~ semicolon }
+statement = { (if_expr | while_expr | for_expr | instr | assignment) ~ semicolon }
 
 instr_name     = { word }
 instr          = { instr_name ~ open_bracket ~ parameter_list ~ closing_bracket }
@@ -19,9 +19,14 @@ else_expr = {
     "else" ~ " "* ~ opening_block ~ statements ~ " "* ~ closing_block
 }
 
+while_expr = {
+    "while" ~ open_bracket ~ expression ~ closing_bracket ~ opening_block ~ " "* ~ statements ~ " "* ~ closing_block
+}
+
 for_expr = {
     "for" ~ open_bracket ~ variable ~ "," ~ start_i ~ "," ~ end_i ~ closing_bracket ~ opening_block ~ " "* ~ statements ~ " "* ~ closing_block
 }
+
 start_i  = { expression }
 end_i    = { expression }
 

@@ -14,6 +14,7 @@ use crate::compiler::statement::for_loop_stmt::ForLoopStatement;
 use crate::compiler::statement::get_stmt::GetStatement;
 use crate::compiler::statement::if_stmt::IfStatement;
 use crate::compiler::statement::print_stmt::PrintStatement;
+use crate::compiler::statement::while_loop_stmt::WhileLoopStatement;
 use crate::data::Data;
 
 #[derive(Parser)]
@@ -56,7 +57,6 @@ fn parse_operation(operation: Pair<Rule>, identifier_table: &mut IdentifierTable
 
     for operation_type in operation.into_inner() {
         match operation_type.as_rule() {
-            // TODO implement
             Rule::value => { operations.push(parse_value(operation_type, identifier_table)) }
             Rule::add => { operators.push(Operator::Add) }
             Rule::sub => { operators.push(Operator::Sub) }
@@ -65,8 +65,8 @@ fn parse_operation(operation: Pair<Rule>, identifier_table: &mut IdentifierTable
             Rule::modulo => { operators.push(Operator::Modulo) }
             Rule::equals => { operators.push(Operator::Eq) }
             Rule::not_equals => { operators.push(Operator::Neq) }
-            Rule::greater => { operators.push(unimplemented!()) }
-            Rule::lesser => { operators.push(unimplemented!()) }
+            Rule::greater => { operators.push(Operator::Greater) }
+            Rule::lesser => { operators.push(Operator::Less) }
             _ => { operations.push(parse_operation(operation_type, identifier_table)) }       // operation needs to be further resolved
         }
     }
@@ -208,6 +208,21 @@ fn parse_for_loop(for_loop: Pair<Rule>, identifier_table: &mut IdentifierTable) 
     ForLoopStatement::create(counter_var_id, start_i, end_i, statements)
 }
 
+fn parse_while_loop(while_loop: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn CompilerStatement> {
+    let mut expr = Expression::Data(DataExpression::empty());
+    let mut statements = vec![];
+
+    for field in while_loop.into_inner() {
+        match field.as_rule() {
+            Rule::expression => { expr = parse_expression(field, identifier_table) }
+            Rule::statements => { statements = parse_statements(identifier_table, field) }
+            _ => unreachable!()
+        }
+    }
+
+    WhileLoopStatement::create(expr, statements)
+}
+
 fn parse_statement(statement: Pair<Rule>, identifier_table: &mut IdentifierTable) -> Box<dyn CompilerStatement> {
     for statement_type in statement.into_inner() {
         match statement_type.as_rule() {
@@ -215,6 +230,7 @@ fn parse_statement(statement: Pair<Rule>, identifier_table: &mut IdentifierTable
             Rule::assignment => { return parse_assignment(statement_type, identifier_table); }
             Rule::if_expr => { return parse_if_expr(statement_type, identifier_table); }
             Rule::for_expr => { return parse_for_loop(statement_type, identifier_table); }
+            Rule::while_expr => { return parse_while_loop(statement_type, identifier_table); }
             _ => unreachable!()
         };
     }

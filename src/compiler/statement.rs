@@ -12,6 +12,7 @@ pub mod if_stmt;
 pub mod for_loop_stmt;
 pub mod exit_stmt;
 pub mod break_stmt;
+pub mod while_loop_stmt;
 
 dyn_clone::clone_trait_object!(CompilerStatement);
 pub trait CompilerStatement: DynClone + Debug {

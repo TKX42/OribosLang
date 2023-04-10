@@ -1,7 +1,7 @@
 use crate::compiler::compile::compile_statements;
 use crate::compiler::expression::{Expression, OperationExpression, Operator};
-use crate::compiler::statement::CompilerStatement;
 use crate::compiler::statement::assign_stmt::AssignmentStatement;
+use crate::compiler::statement::CompilerStatement;
 use crate::compiler::statement::get_stmt::GetStatement;
 use crate::data::Data;
 use crate::data::Data::JumpAddress;

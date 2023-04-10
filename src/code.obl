@@ -1,2 +1,7 @@
-x = 5+2%3;
-print(x);
+x = 0;
+MAX = 1000;
+
+while(x<MAX){
+    print(x);
+    x = x+1;
+};
