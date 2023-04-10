@@ -28,15 +28,15 @@ impl VM {
         println!("Process ended with exit code {}", self.exit_code)
     }
 
-    pub fn run_instructions(&mut self, statements: &[Box<dyn Instruction>]) {
-        while self.instr_pointer < statements.len() {
-            let instr = &statements[self.instr_pointer];
+    pub fn run_instructions(&mut self, instructions: &[Box<dyn Instruction>]) {
+        while self.instr_pointer < instructions.len() {
+            let instr = &instructions[self.instr_pointer];
             self.instr_pointer = self.run_instruction(instr);
         }
     }
 
-    pub fn run_instruction(&mut self, statement: &Box<dyn Instruction>) -> usize {
-        statement.exec(&mut self.stack, &mut self.memory, self.instr_pointer)
+    pub fn run_instruction(&mut self, instruction: &Box<dyn Instruction>) -> usize {
+        instruction.exec(&mut self.stack, &mut self.memory, self.instr_pointer)
     }
 
     pub fn memory(&mut self) -> &mut Memory {

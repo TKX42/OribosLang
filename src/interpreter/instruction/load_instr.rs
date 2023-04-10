@@ -4,13 +4,13 @@ use crate::interpreter::instruction::Instruction;
 use crate::memory::Memory;
 
 #[derive(Clone, Debug)]
-pub struct GET {
+pub struct LOAD {
     address: i64,
 }
 
-impl Instruction for GET {
+impl Instruction for LOAD {
     fn new(parameter: Data) -> Box<dyn Instruction> {
-        Box::new(GET { address: get_memory_address(&parameter) as i64 })
+        Box::new(LOAD { address: get_memory_address(&parameter) as i64 })
     }
 
     fn exec(&self, stack: &mut Vec<Data>, memory: &mut Memory, instr_pointer: usize) -> usize {

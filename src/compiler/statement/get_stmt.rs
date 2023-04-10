@@ -1,8 +1,8 @@
 use crate::compiler::expression::Expression;
 use crate::compiler::statement::CompilerStatement;
 use crate::data::Data;
-use crate::interpreter::instruction::get_instr::GET;
 use crate::interpreter::instruction::Instruction;
+use crate::interpreter::instruction::load_instr::LOAD;
 
 #[derive(Clone, Debug)]
 pub struct GetStatement {
@@ -29,7 +29,7 @@ impl CompilerStatement for GetStatement {
 
     fn compile(&self) -> Vec<Box<dyn Instruction>> {
         vec![
-            GET::new(Data::MemoryAddress(self.var_id))
+            LOAD::new(Data::MemoryAddress(self.var_id))
         ]
     }
 }

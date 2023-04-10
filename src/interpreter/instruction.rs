@@ -8,7 +8,7 @@ use crate::memory::Memory;
 pub mod print_instr;
 pub mod const_instr;
 pub mod assign_instr;
-pub mod get_instr;
+pub mod load_instr;
 pub mod jump_instr;
 pub mod if_jump_instr;
 pub mod operator_instr;
