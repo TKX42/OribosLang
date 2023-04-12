@@ -5,12 +5,12 @@ use crate::memory::Memory;
 
 #[derive(Clone, Debug)]
 pub struct LOAD {
-    address: i64,
+    address: usize,
 }
 
 impl Instruction for LOAD {
     fn new(parameter: Data) -> Box<dyn Instruction> {
-        Box::new(LOAD { address: get_memory_address(&parameter) as i64 })
+        Box::new(LOAD { address: get_memory_address(&parameter) })
     }
 
     fn exec(&self, stack: &mut Vec<Data>, memory: &mut Memory, instr_pointer: usize) -> usize {
