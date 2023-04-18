@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
 #define STACK_SIZE 256
@@ -108,11 +109,34 @@ void vm_run(struct instr *instructions, size_t len, struct Data *stack, struct D
     }
 }
 
+char* parse(char* code) {
+    char delim[] = " ";
+    char* x = strtok(code, delim);
+    int init_size = strlen(code);
+
+    char *ptr = strtok(code, delim);
+    while (ptr != NULL)
+    {
+        printf("'%s'\n", ptr);
+        ptr = strtok(NULL, delim);
+    }
+
+    return malloc(4);
+}
+
 int main() {
     printf("ORIBOS_C\n");
 
     struct Data stack[STACK_SIZE];
     struct Data memory[MEM_SIZE];
+
+    char* demo_code = "PUSH 42"
+                      "MOVE 0";
+                      "LOAD 0";
+                      "SOUT";
+
+    char* instrs = parse(demo_code);
+    free(instrs);
 
     struct instr instr_1 = {CONST, {INT, {.integer=42}}};
     struct instr instr_2 = {ASSIGN, {INT, {.integer=0}}};
