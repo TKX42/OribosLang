@@ -32,7 +32,7 @@ impl CompilerStatement for AssignmentStatement {
     fn compile(&self) -> Vec<Box<dyn Instruction>> {
         let mut result = vec![];
         result.append(&mut compile(&self.var_expression));
-        result.push(ASSIGN::new(Data::MemoryAddress(self.var_address)));        // TODO refactor
+        result.push(ASSIGN::new(Data::MemoryAddress(self.var_address)));
         result
     }
 }

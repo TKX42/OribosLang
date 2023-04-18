@@ -12,7 +12,7 @@ impl Memory {
         }
     }
 
-    pub fn assign(&mut self, address: i64, val: Data) {
+    pub fn assign(&mut self, address: usize, val: Data) {
         if self.mem.len() < address as usize {
             self.mem.push(val);
         } else {
@@ -20,7 +20,7 @@ impl Memory {
         }
     }
 
-    pub fn get(&self, address: i64) -> &Data {
+    pub fn get(&self, address: usize) -> &Data {
         match self.mem.get((address - 1) as usize) {
             None => {
                 memory_error(address);
@@ -37,6 +37,6 @@ impl Default for Memory {
     }
 }
 
-fn memory_error(id: i64) {
+fn memory_error(id: usize) {
     panic!("Error: Unknown variable {id}");
 }

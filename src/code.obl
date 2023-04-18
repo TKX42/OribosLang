@@ -1,7 +1,20 @@
-x = 0;
-MAX = 1000;
+num = 113;
+print(num);
 
-while(x<MAX){
-    print(x);
-    x = x+1;
+flag = false;
+if(num==1){
+   print("1 is not a prime number");
+}
+else{
+    for(i,2,num){
+        if((num%2)==0){
+            flag = true;
+        };
+    };
+
+    if(flag==true){
+        print("not a prime number");
+    }else {
+        print("prime number");
+    };
 };
