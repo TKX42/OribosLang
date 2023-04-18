@@ -67,6 +67,7 @@ enum instr_type {
     CONST,
     IFJUMP,
     ADD,
+    MOD,
     PRINT
 };
 
@@ -136,6 +137,14 @@ void instr_run(struct instr *instruction, int *pc, struct Data *stack, int *sc, 
             stack[*sc] = result;
             break;
         }
+        case MOD: {
+            int right = stack[*sc].data.integer;
+            (*sc)--;
+            int left = stack[*sc].data.integer;
+            struct Data result = {INT, .data={.integer=left % right}};
+            stack[*sc] = result;
+            break;
+        }
     }
 }
 
@@ -193,6 +202,12 @@ struct instr parse_instr(char *instr_type, char *parameter) {
         return instr;
     }
 
+    if (INSTR_EQ("MOD")) {
+        struct instr instr = {MOD, {.type=NIL}};
+        return instr;
+    }
+
+
     init_error("Unknown instruction");
     // unreachable
 }
@@ -218,9 +233,9 @@ int main() {
     struct Data stack[STACK_SIZE];
     struct Data memory[MEM_SIZE];
 
-    char demo_code[] = "CONST 40\n"
-                       "CONST 2\n"
-                       "ADD\n"
+    char demo_code[] = "CONST 5\n"
+                       "CONST 3\n"
+                       "MOD\n"
                        "PRINT\n";
 
     int count = count_string(demo_code, "\n");
