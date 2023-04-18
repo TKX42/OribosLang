@@ -66,6 +66,7 @@ enum instr_type {
     ASSIGN,
     CONST,
     IFJUMP,
+    ADD,
     PRINT
 };
 
@@ -81,12 +82,12 @@ void sc_pop_check(const int sc, const int size) {
 }
 
 void sc_push_check(const int sc, const int size) {
-    if(sc >= size) {
+    if (sc >= size) {
         runtime_error("Invalid stack counter");
     }
 }
 
-void instr_run(struct instr *instruction, int* pc, struct Data *stack, int *sc, struct Data *memory) {
+void instr_run(struct instr *instruction, int *pc, struct Data *stack, int *sc, struct Data *memory) {
     switch (instruction->type) {
         case LOAD: {
             (*sc)++;
@@ -111,10 +112,10 @@ void instr_run(struct instr *instruction, int* pc, struct Data *stack, int *sc, 
         case IFJUMP: {
             sc_pop_check(*sc, STACK_SIZE);
             int condition = stack[*sc].data.integer;
-            if(condition == 1) {
-                *pc += instruction->data.data.integer - 1;  // -1 because pc will be increased again in vm_run after an instruction completed
-            }
-            else {
+            if (condition == 1) {
+                *pc += instruction->data.data.integer -
+                       1;  // -1 because pc will be increased again in vm_run after an instruction completed
+            } else {
                 (*pc)++;
             }
             (*sc)--;
@@ -125,6 +126,14 @@ void instr_run(struct instr *instruction, int* pc, struct Data *stack, int *sc, 
             struct Data data = stack[*sc];
             print(&data);
             (*sc)--;
+            break;
+        }
+        case ADD: {
+            int right = stack[*sc].data.integer;
+            (*sc)--;
+            int left = stack[*sc].data.integer;
+            struct Data result = {INT, .data={.integer=left + right}};
+            stack[*sc] = result;
             break;
         }
     }
@@ -173,13 +182,19 @@ struct instr parse_instr(char *instr_type, char *parameter) {
         return instr;
     }
 
-    if(INSTR_EQ("IFJUMP")) {
+    if (INSTR_EQ("IFJUMP")) {
         int p = strtol(parameter, NULL, 0);
         struct instr instr = {IFJUMP, {.type=INT, .data.integer=p}};
         return instr;
     }
 
+    if (INSTR_EQ("ADD")) {
+        struct instr instr = {ADD, {.type=NIL}};
+        return instr;
+    }
+
     init_error("Unknown instruction");
+    // unreachable
 }
 
 void parse(const char *code, struct instr *instructions) {
@@ -203,11 +218,9 @@ int main() {
     struct Data stack[STACK_SIZE];
     struct Data memory[MEM_SIZE];
 
-    char demo_code[] = "CONST 42\n"
-                       "PRINT 0\n"
-                       "CONST 1\n"
-                       "IFJUMP -3\n"
-                       "CONST OHNO\n"
+    char demo_code[] = "CONST 40\n"
+                       "CONST 2\n"
+                       "ADD\n"
                        "PRINT\n";
 
     int count = count_string(demo_code, "\n");
