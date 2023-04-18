@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
+#define STREQ(a, b) (strcmp(a,b)==0)
+#define INSTR_EQ(x) (STREQ(instr_type, x))
+
 #define STACK_SIZE 256
 #define MEM_SIZE 1024
 
@@ -28,6 +32,11 @@ struct Data {
 
 void runtime_error(char *msg) {
     printf("Runtime Error: %s", msg);
+    exit(1);
+}
+
+void init_error(char *msg) {
+    printf("Init Error: %s", msg);
     exit(1);
 }
 
@@ -109,19 +118,58 @@ void vm_run(struct instr *instructions, size_t len, struct Data *stack, struct D
     }
 }
 
-char* parse(char* code) {
-    char delim[] = " ";
-    char* x = strtok(code, delim);
-    int init_size = strlen(code);
+int count_string(const char *haystack, const char *needle) {
+    int count = 0;
+    const char *tmp = haystack;
+    while (tmp = strstr(tmp, needle)) {
+        count++;
+        tmp++;
+    }
+    return count;
+}
 
-    char *ptr = strtok(code, delim);
-    while (ptr != NULL)
-    {
-        printf("'%s'\n", ptr);
-        ptr = strtok(NULL, delim);
+struct instr parse_instr(char *instr_type, char *parameter) {
+    printf("parsing %s %s\n", instr_type, parameter);
+
+    if (INSTR_EQ("PRINT")) {
+        struct instr instr = {PRINT, {NIL}};
+        return instr;
     }
 
-    return malloc(4);
+    if (INSTR_EQ("CONST")) {
+        int data = strtol(parameter, NULL, 0);
+        struct instr instr = {CONST, {.type=INT, .data.integer=data}};
+        return instr;
+    }
+
+    if (INSTR_EQ("LOAD")) {
+        int p = strtol(parameter, NULL, 0);
+        struct instr instr = {LOAD, {.type=INT, .data.integer=p}};
+        return instr;
+    }
+
+    if (INSTR_EQ("ASSIGN")) {
+        int p = strtol(parameter, NULL, 0);
+        struct instr instr = {ASSIGN, {.type=INT, .data.integer=p}};
+        return instr;
+    }
+
+    init_error("Unknown instruction");
+}
+
+void parse(const char *code, struct instr *instructions) {
+    char instruction[10];
+    char parameter[10];
+
+    int i = 0;
+    char *token = strtok(code, "\n");
+    while (token != NULL) {
+        sscanf(token, "%s %s", instruction, parameter);
+        instructions[i] = parse_instr((char *) &instruction, parameter);
+
+        token = strtok(NULL, "\n");
+        i++;
+    }
 }
 
 int main() {
@@ -130,24 +178,15 @@ int main() {
     struct Data stack[STACK_SIZE];
     struct Data memory[MEM_SIZE];
 
-    char* demo_code = "PUSH 42"
-                      "MOVE 0";
-                      "LOAD 0";
-                      "SOUT";
+    char demo_code[] = "CONST 42\n"
+                       "ASSIGN 0\n"
+                       "LOAD 0\n"
+                       "PRINT 0\n";
 
-    char* instrs = parse(demo_code);
-    free(instrs);
-
-    struct instr instr_1 = {CONST, {INT, {.integer=42}}};
-    struct instr instr_2 = {ASSIGN, {INT, {.integer=0}}};
-    struct instr instr_3 = {CONST, {STRING, {.string="the end"}}};
-    struct instr instr_4 = {LOAD, {INT, {.integer=0}}};
-    struct instr instr_5 = {PRINT, {NIL}};
-    struct instr instr_6 = {PRINT, {NIL}};
-
-    struct instr instructions[] = {instr_1, instr_2, instr_3, instr_4, instr_5, instr_6};
-
-    vm_run((struct instr *) &instructions, NELEMS(instructions), stack, memory);
+    int count = count_string(demo_code, "\n");
+    struct instr instrs[count];
+    parse((const char *) &demo_code, instrs);
+    vm_run(instrs, count, stack, memory);
 
     return 0;
 }
