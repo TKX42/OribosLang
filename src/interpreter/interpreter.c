@@ -66,6 +66,7 @@ enum instr_type {
     ASSIGN,
     CONST,
     IFJUMP,
+    JUMP,
     ADD,
     MOD,
     PRINT
@@ -120,6 +121,10 @@ void instr_run(struct instr *instruction, int *pc, struct Data *stack, int *sc, 
                 (*pc)++;
             }
             (*sc)--;
+            break;
+        }
+        case JUMP: {
+            *pc += instruction->data.data.integer - 1;
             break;
         }
         case PRINT: {
@@ -197,6 +202,12 @@ struct instr parse_instr(char *instr_type, char *parameter) {
         return instr;
     }
 
+    if (INSTR_EQ("JUMP")) {
+        int p = strtol(parameter, NULL, 0);
+        struct instr instr = {JUMP, {.type=INT, .data.integer=p}};
+        return instr;
+    }
+
     if (INSTR_EQ("ADD")) {
         struct instr instr = {ADD, {.type=NIL}};
         return instr;
@@ -236,7 +247,8 @@ int main() {
     char demo_code[] = "CONST 5\n"
                        "CONST 3\n"
                        "MOD\n"
-                       "PRINT\n";
+                       "PRINT\n"
+                       "JUMP -4\n";
 
     int count = count_string(demo_code, "\n");
     struct instr instrs[count];
