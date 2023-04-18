@@ -56,7 +56,7 @@ void print(struct Data *data) {
             print_str(&data->data.string);
             break;
         case NIL:
-            runtime_error("Cannot print NIL");
+            printf("NIL");
             break;
     }
 }
@@ -65,6 +65,7 @@ enum instr_type {
     LOAD,
     ASSIGN,
     CONST,
+    IFJUMP,
     PRINT
 };
 
@@ -73,22 +74,29 @@ struct instr {
     struct Data data;
 };
 
-void sc_check(const int sc, const int size) {
+void sc_pop_check(const int sc, const int size) {
     if (sc < 0 || sc >= size) {
         runtime_error("Invalid stack counter");
     }
 }
 
-void instr_run(struct instr *instruction, struct Data *stack, int *sc, struct Data *memory) {
+void sc_push_check(const int sc, const int size) {
+    if(sc >= size) {
+        runtime_error("Invalid stack counter");
+    }
+}
+
+void instr_run(struct instr *instruction, int* pc, struct Data *stack, int *sc, struct Data *memory) {
     switch (instruction->type) {
         case LOAD: {
             (*sc)++;
+            sc_push_check(*sc, STACK_SIZE);
             struct Data data = memory[instruction->data.data.integer];
             stack[*sc] = data;
             break;
         }
         case ASSIGN: {
-            sc_check(*sc, STACK_SIZE);
+            sc_pop_check(*sc, STACK_SIZE);
             struct Data data = stack[*sc];
             memory[instruction->data.data.integer] = data;
             (*sc)--;
@@ -96,11 +104,24 @@ void instr_run(struct instr *instruction, struct Data *stack, int *sc, struct Da
         }
         case CONST: {
             (*sc)++;
+            sc_push_check(*sc, STACK_SIZE);
             stack[*sc] = instruction->data;
             break;
         }
+        case IFJUMP: {
+            sc_pop_check(*sc, STACK_SIZE);
+            int condition = stack[*sc].data.integer;
+            if(condition == 1) {
+                *pc += instruction->data.data.integer - 1;  // -1 because pc will be increased again in vm_run after an instruction completed
+            }
+            else {
+                (*pc)++;
+            }
+            (*sc)--;
+            break;
+        }
         case PRINT: {
-            sc_check(*sc, STACK_SIZE);
+            sc_pop_check(*sc, STACK_SIZE);
             struct Data data = stack[*sc];
             print(&data);
             (*sc)--;
@@ -113,7 +134,7 @@ void vm_run(struct instr *instructions, size_t len, struct Data *stack, struct D
     int pc = 0;
     int sc = -1;
     while (pc < len) {
-        instr_run(&instructions[pc], stack, &sc, memory);
+        instr_run(&instructions[pc], &pc, stack, &sc, memory);
         pc++;
     }
 }
@@ -129,8 +150,6 @@ int count_string(const char *haystack, const char *needle) {
 }
 
 struct instr parse_instr(char *instr_type, char *parameter) {
-    printf("parsing %s %s\n", instr_type, parameter);
-
     if (INSTR_EQ("PRINT")) {
         struct instr instr = {PRINT, {NIL}};
         return instr;
@@ -154,16 +173,22 @@ struct instr parse_instr(char *instr_type, char *parameter) {
         return instr;
     }
 
+    if(INSTR_EQ("IFJUMP")) {
+        int p = strtol(parameter, NULL, 0);
+        struct instr instr = {IFJUMP, {.type=INT, .data.integer=p}};
+        return instr;
+    }
+
     init_error("Unknown instruction");
 }
 
 void parse(const char *code, struct instr *instructions) {
-    char instruction[10];
-    char parameter[10];
-
     int i = 0;
     char *token = strtok(code, "\n");
     while (token != NULL) {
+        size_t max_cap = strlen(token);
+        char instruction[max_cap];
+        char parameter[max_cap];
         sscanf(token, "%s %s", instruction, parameter);
         instructions[i] = parse_instr((char *) &instruction, parameter);
 
@@ -179,9 +204,11 @@ int main() {
     struct Data memory[MEM_SIZE];
 
     char demo_code[] = "CONST 42\n"
-                       "ASSIGN 0\n"
-                       "LOAD 0\n"
-                       "PRINT 0\n";
+                       "PRINT 0\n"
+                       "CONST 1\n"
+                       "IFJUMP -3\n"
+                       "CONST OHNO\n"
+                       "PRINT\n";
 
     int count = count_string(demo_code, "\n");
     struct instr instrs[count];
