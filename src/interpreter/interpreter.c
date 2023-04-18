@@ -69,6 +69,8 @@ enum instr_type {
     JUMP,
     ADD,
     MOD,
+    EQ,
+    LESS,
     PRINT
 };
 
@@ -115,16 +117,14 @@ void instr_run(struct instr *instruction, int *pc, struct Data *stack, int *sc, 
             sc_pop_check(*sc, STACK_SIZE);
             int condition = stack[*sc].data.integer;
             if (condition == 1) {
-                *pc += instruction->data.data.integer -
-                       1;  // -1 because pc will be increased again in vm_run after an instruction completed
-            } else {
-                (*pc)++;
+                (*pc) += instruction->data.data.integer -
+                         1;  // -1 because pc will be increased again in vm_run after an instruction completed
             }
             (*sc)--;
             break;
         }
         case JUMP: {
-            *pc += instruction->data.data.integer - 1;
+            (*pc) += instruction->data.data.integer - 1;
             break;
         }
         case PRINT: {
@@ -147,6 +147,23 @@ void instr_run(struct instr *instruction, int *pc, struct Data *stack, int *sc, 
             (*sc)--;
             int left = stack[*sc].data.integer;
             struct Data result = {INT, .data={.integer=left % right}};
+            stack[*sc] = result;
+            break;
+        }
+        case EQ: {
+            int right = stack[*sc].data.integer;
+            (*sc)--;
+            int left = stack[*sc].data.integer;
+            int eq = left == right;
+            struct Data result = {INT, .data={.integer=eq}};
+            stack[*sc] = result;
+            break;
+        }
+        case LESS: {
+            int right = stack[*sc].data.integer;
+            (*sc)--;
+            int left = stack[*sc].data.integer;
+            struct Data result = {INT, .data={.integer=left <= right}};
             stack[*sc] = result;
             break;
         }
@@ -218,6 +235,15 @@ struct instr parse_instr(char *instr_type, char *parameter) {
         return instr;
     }
 
+    if(INSTR_EQ("EQ")) {
+        struct instr instr = {EQ, {.type=NIL}};
+        return instr;
+    }
+
+    if(INSTR_EQ("LESS")) {
+        struct instr instr = {LESS, {.type=NIL}};
+        return instr;
+    }
 
     init_error("Unknown instruction");
     // unreachable
@@ -244,11 +270,50 @@ int main() {
     struct Data stack[STACK_SIZE];
     struct Data memory[MEM_SIZE];
 
-    char demo_code[] = "CONST 5\n"
-                       "CONST 3\n"
-                       "MOD\n"
+    char demo_code[] = "CONST 370248451\n"
+                       "ASSIGN 1\n"
+                       "LOAD 1\n"
                        "PRINT\n"
-                       "JUMP -4\n";
+                       "CONST 0\n"
+                       "ASSIGN 2\n"
+                       "LOAD 1\n"
+                       "CONST 1\n"
+                       "EQ\n"
+                       "IFJUMP 2\n"
+                       "JUMP 4\n"
+                       "CONST -111\n"
+                       "PRINT\n"
+                       "JUMP 31\n"
+                       "CONST 2\n"
+                       "ASSIGN 3\n"
+                       "LOAD 1\n"
+                       "CONST 2\n"
+                       "MOD\n"
+                       "CONST 0\n"
+                       "EQ\n"
+                       "IFJUMP 2\n"
+                       "JUMP 4\n"
+                       "CONST 1\n"
+                       "ASSIGN 2\n"
+                       "JUMP 1\n"
+                       "LOAD 3\n"
+                       "CONST 1\n"
+                       "ADD\n"
+                       "ASSIGN 3\n"
+                       "LOAD 3\n"
+                       "LOAD 1\n"
+                       "LESS\n"
+                       "IFJUMP -17\n"
+                       "LOAD 2\n"
+                       "CONST 1\n"
+                       "EQ\n"
+                       "IFJUMP 2\n"
+                       "JUMP 4\n"
+                       "CONST 0000\n"
+                       "PRINT\n"
+                       "JUMP 3\n"
+                       "CONST 1111\n"
+                       "PRINT\n";
 
     int count = count_string(demo_code, "\n");
     struct instr instrs[count];
