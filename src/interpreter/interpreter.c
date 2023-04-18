@@ -2,6 +2,8 @@
 #include <stdlib.h>
 
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
+#define STACK_SIZE 256
+#define MEM_SIZE 1024
 
 enum DataType {
     INT,
@@ -61,27 +63,47 @@ struct instr {
     struct Data data;
 };
 
-void instr_run(struct instr *instruction, struct Data *stack, int *sc) {
-    switch (instruction->type) {
-        case LOAD:
-            break;
-        case ASSIGN:
-            break;
-        case CONST:
-            stack[*sc] = instruction->data;
-            break;
-        case PRINT:
-            print(&stack[*sc]);
-            sc--;
-            break;
+void sc_check(const int sc, const int size) {
+    if (sc < 0 || sc >= size) {
+        runtime_error("Invalid stack counter");
     }
 }
 
-void vm_run(struct instr *instructions, size_t len, struct Data *stack) {
+void instr_run(struct instr *instruction, struct Data *stack, int *sc, struct Data *memory) {
+    switch (instruction->type) {
+        case LOAD: {
+            (*sc)++;
+            struct Data data = memory[instruction->data.data.integer];
+            stack[*sc] = data;
+            break;
+        }
+        case ASSIGN: {
+            sc_check(*sc, STACK_SIZE);
+            struct Data data = stack[*sc];
+            memory[instruction->data.data.integer] = data;
+            (*sc)--;
+            break;
+        }
+        case CONST: {
+            (*sc)++;
+            stack[*sc] = instruction->data;
+            break;
+        }
+        case PRINT: {
+            sc_check(*sc, STACK_SIZE);
+            struct Data data = stack[*sc];
+            print(&data);
+            (*sc)--;
+            break;
+        }
+    }
+}
+
+void vm_run(struct instr *instructions, size_t len, struct Data *stack, struct Data *memory) {
     int pc = 0;
-    int sc = 0;
+    int sc = -1;
     while (pc < len) {
-        instr_run(&instructions[pc], stack, &sc);
+        instr_run(&instructions[pc], stack, &sc, memory);
         pc++;
     }
 }
@@ -89,18 +111,19 @@ void vm_run(struct instr *instructions, size_t len, struct Data *stack) {
 int main() {
     printf("ORIBOS_C\n");
 
-    int STACK_SIZE = 256;
     struct Data stack[STACK_SIZE];
+    struct Data memory[MEM_SIZE];
 
     struct instr instr_1 = {CONST, {INT, {.integer=42}}};
-    //struct instr instr_1 = {CONST, {NIL}};
-    struct instr instr_2 = {PRINT, {NIL}};
-    struct instr instr_3 = {CONST, {STRING, {.string="ez"}}};
-    struct instr instr_4 = {PRINT, {NIL}};
+    struct instr instr_2 = {ASSIGN, {INT, {.integer=0}}};
+    struct instr instr_3 = {CONST, {STRING, {.string="the end"}}};
+    struct instr instr_4 = {LOAD, {INT, {.integer=0}}};
+    struct instr instr_5 = {PRINT, {NIL}};
+    struct instr instr_6 = {PRINT, {NIL}};
 
-    struct instr instructions[] = {instr_1, instr_2, instr_3, instr_4};
+    struct instr instructions[] = {instr_1, instr_2, instr_3, instr_4, instr_5, instr_6};
 
-    vm_run(&instructions, NELEMS(instructions), stack);
+    vm_run((struct instr *) &instructions, NELEMS(instructions), stack, memory);
 
     return 0;
 }
